@@ -45,7 +45,7 @@ typedef struct	s_data {
 typedef	struct	s_fdf {
 	void	*mlx;
 	void	*mlx_win;
-	t_data	data;
+	t_data	*data;
 	t_map	map;
 }	t_fdf;
 
@@ -53,7 +53,7 @@ void	putpix(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	if (x > 0 && y > 0 && x < WIDTH && y < HEIGHT)
+	if (!(x > 0 && y > 0 && x < WIDTH && y < HEIGHT))
 		return ;
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
 		*(unsigned int*)dst = color;
@@ -289,13 +289,15 @@ void	draw(t_map *map, t_data *img)
 
 void	update(t_fdf *fdf)
 {
-	(void)fdf;
+	to_iso(&fdf->map);
+	scale(&fdf->map);
+	shift(&fdf->map);
 }
 
 void	render(t_fdf *fdf)
 {
-	draw(&fdf->map, &fdf->data); 
-	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, fdf->data.img, 0, 0);
+	draw(&fdf->map, fdf->data); 
+	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, fdf->data->img, 0, 0);
 }
 int	loop(t_fdf *fdf)
 {
@@ -306,19 +308,16 @@ int	loop(t_fdf *fdf)
 
 int	main(int argc, char **argv)
 {
-	t_fdf	fdf = {.data = {0}};
+	t_fdf	fdf;
 	
-
+	fdf.data = malloc(sizeof(t_data));
 	if (argc != 2)
 		return 1;
 	fdf.mlx = mlx_init();
 	fdf.mlx_win = mlx_new_window(fdf.mlx, WIDTH, HEIGHT, "Fdf");
-	fdf.data.img = mlx_new_image(fdf.mlx, WIDTH, HEIGHT);
-	fdf.data.addr = mlx_get_data_addr(fdf.data.img, &fdf.data.bits_per_pixel, &fdf.data.line_length, &fdf.data.endian);
+	fdf.data->img = mlx_new_image(fdf.mlx, WIDTH, HEIGHT);
+	fdf.data->addr = mlx_get_data_addr(fdf.data->img, &fdf.data->bits_per_pixel, &fdf.data->line_length, &fdf.data->endian);
 	fdf.map = create_map(argv[1]);
-	to_iso(&fdf.map);
-	scale(&fdf.map);
-	shift(&fdf.map);
 	mlx_loop_hook(fdf.mlx, loop, &fdf);
 	mlx_loop(fdf.mlx);
 	ft_putstr_fd("tchau",1);
