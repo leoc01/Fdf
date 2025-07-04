@@ -8,17 +8,16 @@ void	draw(t_map *map, t_data *data)
 	while (i < map->area)
 	{
 		if (map->point[i].ax)
-			d_line(data, map->point[i-1], map->point[i], 0x00FF00FF);
+			d_line(data, map->point[i-1], map->point[i], 0x00FFFFFF);
 		if (map->point[i].ay)
-			d_line(data, map->point[i], map->point[i-map->size_x], 0x00FF00FF);
-		putpix(data, map->point[i].px, map->point[i].py, 0x00FFFFFF);
+			d_line(data, map->point[i], map->point[i-map->size_x], 0x00FFFFFF);
 		i++;
 	}
 }
 
 void	update(t_fdf *fdf)
 {
-	to_iso(&fdf->map);
+	to_iso(&fdf->map, (-M_PI / 2) + fdf->params.angle);
 	scale(&fdf->map, fdf->params.zoom);
 	set_limits(&fdf->map);
 	shift(&fdf->map, fdf->params);
@@ -45,6 +44,18 @@ int	key_hook(int keysym, t_fdf *fdf)
 		fdf->params.zoom *= 1.1;
 	if (keysym == 65364)
 		fdf->params.zoom /= 1.1;
+	if (keysym == 100)
+		fdf->params.shx -= 10;
+	if (keysym == 97)
+		fdf->params.shx += 10;
+	if (keysym == 115)
+		fdf->params.shy -= 10;
+	if (keysym == 119)
+		fdf->params.shy += 10;
+	if (keysym == 65361)
+		fdf->params.angle -= M_PI / 16;
+	if (keysym == 65363)
+		fdf->params.angle += M_PI / 16;
 	printf("%d\n", keysym);
 	return (0);
 }

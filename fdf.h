@@ -41,6 +41,9 @@ typedef struct	s_params {
 	float	zoom;
 	int		cx;
 	int		cy;
+	int		shx;
+	int		shy;
+	float	angle;
 }	t_params;
 
 typedef struct	s_data {
@@ -66,7 +69,7 @@ void	d_line_high(t_data *data, t_point i, t_point f, int color);
 void	d_line(t_data *data, t_point i, t_point f, int color);
 void	get_points(t_point *point, t_map *map, char *file);
 t_map	create_map(char *file);
-void	to_iso(t_map *map);
+void	to_iso(t_map *map, float angle);
 void	set_limits(t_map *map);
 void	scale(t_map *map, float zoom);
 void	shift(t_map *map, t_params params);

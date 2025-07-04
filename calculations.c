@@ -1,16 +1,21 @@
 #include "fdf.h"
 
-void	to_iso(t_map *map)
+void to_iso(t_map *map, float angle)
 {
-	int i;
-
-	i = 0;
-	while (i < map->area)
-	{
-		map->point[i].px = (map->point[i].ax + map->point[i].ay) * 2;
-		map->point[i].py = (map->point[i].ay - map->point[i].ax) - map->point[i].az / Z_FAC;
-		i++;
-	}
+   int i;
+    float cos_a = cos(angle);
+    float sin_a = sin(angle);
+    float rotated_x, rotated_y;
+    
+    i = 0;
+    while (i < map->area)
+    {
+        rotated_x = map->point[i].ax * cos_a - map->point[i].ay * sin_a;
+        rotated_y = map->point[i].ax * sin_a + map->point[i].ay * cos_a;
+        map->point[i].px = (rotated_x - rotated_y) * 2;
+        map->point[i].py = (rotated_x + rotated_y) - map->point[i].az / Z_FAC;
+        i++;
+    }
 }
 
 void	set_limits(t_map *map)
@@ -59,20 +64,23 @@ void	shift(t_map *map, t_params params)
 	i = 0;
 	while (i < map->area)
 	{
-		map->point[i].px = map->point[i].px - params.cx;
-		map->point[i].py = map->point[i].py - params.cy;
+		map->point[i].px = map->point[i].px - params.cx + params.shx * params.zoom;
+		map->point[i].py = map->point[i].py - params.cy + params.shy * params.zoom;;
 		i++;
 	}
 }
 
 void	init_values(t_fdf *fdf)
 {
-	to_iso(&fdf->map);
+	fdf->params.angle = 0;
+	to_iso(&fdf->map, (-M_PI / 2) * fdf->params.angle);
 	set_limits(&fdf->map);
 	fdf->params.zoom = (WIDTH - PADDING * 2.0f) / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min);
 	if (WIDTH / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min) > HEIGHT / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min))
 		fdf->params.zoom = (HEIGHT - PADDING * 2.0f) / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min);
-	scale(&fdf->map, fdf->params.zoom);
+	fdf->params.shx = 0;
+	fdf->params.shy = 0;
+		scale(&fdf->map, fdf->params.zoom);
 	set_limits(&fdf->map);
 	shift(&fdf->map, fdf->params);
 }
