@@ -20,7 +20,7 @@ void	update(t_fdf *fdf)
 {
 	to_iso(&fdf->map);
 	scale(&fdf->map, fdf->zoom);
-	shift(&fdf->map);
+	shift(&fdf->map, fdf->shx, fdf->shy);
 }
 
 void	render(t_fdf *fdf)
@@ -53,7 +53,7 @@ void	start(t_fdf *fdf, char *file)
 	fdf->mlx = mlx_init();
 	fdf->mlx_win = mlx_new_window(fdf->mlx, WIDTH, HEIGHT, "Fdf");
 	fdf->map = create_map(file);
-	fdf->zoom = 1;
+	init_values(fdf);
 	mlx_key_hook(fdf->mlx_win, key_hook, fdf);
 	mlx_loop_hook(fdf->mlx, loop, fdf);
 }

@@ -17,7 +17,7 @@ void	set_limits(t_map *map)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	map->limits.x_max = 0;
 	map->limits.x_min = 0;
 	map->limits.y_max = 0;
@@ -39,31 +39,20 @@ void	set_limits(t_map *map)
 void	scale(t_map *map, float zoom)
 {
 	int	i;
-	float	sc;
-
-	set_limits(map);
-	sc = (WIDTH - PADDING * 2.0f) / fabs(map->limits.x_max - map->limits.x_min);
-	if (WIDTH / fabs(map->limits.x_max - map->limits.x_min) > HEIGHT / fabs(map->limits.y_max - map->limits.y_min))
-		sc = (HEIGHT - PADDING * 2.0f) / fabs(map->limits.y_max - map->limits.y_min);
-	sc *= zoom;
+	
 	i = 0;
 	while (i < map->area)
 	{
-		map->point[i].px *= sc;
-		map->point[i].py *= sc;
+		map->point[i].px *= zoom;
+		map->point[i].py *= zoom;
 		i++;
 	}
 }
 
-void	shift(t_map *map)
+void	shift(t_map *map, int shx, int shy)
 {
 	int	i;
-	int	shx;
-	int	shy;
 
-	set_limits(map);
-	shx = (map->limits.x_min + (map->limits.x_max - map->limits.x_min)/2) - WIDTH/2;
-	shy = (map->limits.y_min + (map->limits.y_max - map->limits.y_min)/2) - HEIGHT/2;
 	i = 0;
 	while (i < map->area)
 	{
@@ -71,4 +60,18 @@ void	shift(t_map *map)
 		map->point[i].py = map->point[i].py - shy;
 		i++;
 	}
+}
+
+void	init_values(t_fdf *fdf)
+{
+	to_iso(&fdf->map);
+	set_limits(&fdf->map);
+	fdf->zoom = (WIDTH - PADDING * 2.0f) / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min);
+	if (WIDTH / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min) > HEIGHT / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min))
+		fdf->zoom = (HEIGHT - PADDING * 2.0f) / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min);
+	scale(&fdf->map, fdf->zoom);
+	set_limits(&fdf->map);
+	fdf->shx = (fdf->map.limits.x_min + (fdf->map.limits.x_max - fdf->map.limits.x_min)/2) - WIDTH/2;
+	fdf->shy = (fdf->map.limits.y_min + (fdf->map.limits.y_max - fdf->map.limits.y_min)/2) - HEIGHT/2;
+	shift(&fdf->map, fdf->shx, fdf->shy);
 }
