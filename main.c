@@ -1,29 +1,31 @@
 #include <mlx.h>
+#include <mlx_int.h>
 #include <stdlib.h>
 #include <math.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <stdio.h>
 #include "get_next_line.h"
 #include "./libft/libft.h"
 
-#define WIDTH 1600
-#define HEIGHT 900
+#define WIDTH 1300
+#define HEIGHT 690
+#define PADDING 50
+#define	Z_FAC 2
 
 typedef struct	s_point {
 	int ax;
 	int ay;
 	int az;
-	int	px;
-	int	py;
+	float	px;
+	float	py;
 	int	color;
 }	t_point;
 
 typedef struct	s_limits {
-	int	x_max;
-	int	x_min;
-	int	y_max;
-	int	y_min;
+	float	x_max;
+	float	x_min;
+	float	y_max;
+	float	y_min;
 }	t_limits;
 
 typedef	struct	s_map {
@@ -47,6 +49,7 @@ typedef	struct	s_fdf {
 	void	*mlx_win;
 	t_data	data;
 	t_map	map;
+	float		zoom;
 }	t_fdf;
 
 void	putpix(t_data *data, int x, int y, int color)
@@ -87,16 +90,16 @@ void	d_line_low(t_data *data, t_point i, t_point f, int color)
 		dir = -1;
 	dy *= dir;
 	d = 2 * dy - dx;
-	while (i.px < f.px)
+	while (i.px <= f.px)
 	{
 		putpix(data, i.px++, i.py, color);
 		if (d >= 0)
 		{
 			i.py += dir;
-			d = dy - dx;
+			d += dy - dx;
 		}
 		else
-			d = d + dy;
+			d += dy;
 	}
 }
 
@@ -116,16 +119,16 @@ void	d_line_high(t_data *data, t_point i, t_point f, int color)
 		dir = -1;
 	dx *= dir;
 	d = 2 * dx - dy;
-	while (i.py < f.py)
+	while (i.py <= f.py)
 	{
 		putpix(data, i.px, i.py++, color);
 		if (d >= 0)
 		{
 			i.px += dir;
-			d = dx - dy;
+			d += dx - dy;
 		}
 		else
-			d = d + dx;
+			d += dx;
 	}
 }
 
@@ -134,9 +137,9 @@ void	d_line(t_data *data, t_point i, t_point f, int color)
 	int	dx;
 	int dy;
 
-	dx = abs(f.px - i.px);
-	dy = abs(f.py - i.py);
-	if (dx >= dy)
+	dx = fabs(f.px - i.px);
+	dy = fabs(f.py - i.py);
+	if (dx > dy)
 		d_line_low(data, i, f, color);
 	else
 		d_line_high(data, i, f, color);
@@ -206,7 +209,7 @@ void	to_iso(t_map *map)
 	while (i < map->area)
 	{
 		map->point[i].px = (map->point[i].ax + map->point[i].ay) * 2;
-		map->point[i].py = (map->point[i].ay - map->point[i].ax) - map->point[i].az;
+		map->point[i].py = (map->point[i].ay - map->point[i].ax) - map->point[i].az / Z_FAC;
 		i++;
 	}
 }
@@ -234,17 +237,16 @@ void	set_limits(t_map *map)
 	}
 }
 
-void	scale(t_map *map)
+void	scale(t_map *map, float zoom)
 {
 	int	i;
-	int	sc;
+	float	sc;
 
 	set_limits(map);
-	sc = (WIDTH - 200) / abs(map->limits.x_max - map->limits.x_min);
-	if (abs(map->limits.x_max - map->limits.x_min) / WIDTH > abs(map->limits.y_max - map->limits.y_min) / HEIGHT)
-		sc = (HEIGHT - 200) / abs(map->limits.y_max - map->limits.y_min);
-	if (sc == 0)
-		sc = 1;
+	sc = (WIDTH - PADDING * 2.0f) / fabs(map->limits.x_max - map->limits.x_min);
+	if (WIDTH / fabs(map->limits.x_max - map->limits.x_min) > HEIGHT / fabs(map->limits.y_max - map->limits.y_min))
+		sc = (HEIGHT - PADDING * 2.0f) / fabs(map->limits.y_max - map->limits.y_min);
+	sc *= zoom;
 	i = 0;
 	while (i < map->area)
 	{
@@ -272,7 +274,7 @@ void	shift(t_map *map)
 	}
 }
 
-void	draw(t_map *map, t_data *img)
+void	draw(t_map *map, t_data *data)
 {
 	int	i;
 
@@ -280,9 +282,10 @@ void	draw(t_map *map, t_data *img)
 	while (i < map->area)
 	{
 		if (map->point[i].ax)
-			d_line(img, map->point[i-1], map->point[i], 0x00FF00FF);
+			d_line(data, map->point[i-1], map->point[i], 0x00FF00FF);
 		if (map->point[i].ay)
-			d_line(img, map->point[i], map->point[i-map->x], 0x00FF00FF);
+			d_line(data, map->point[i], map->point[i-map->x], 0x00FF00FF);
+		putpix(data, map->point[i].px, map->point[i].py, 0x00FFFFFF);
 		i++;
 	}
 }
@@ -290,20 +293,34 @@ void	draw(t_map *map, t_data *img)
 void	update(t_fdf *fdf)
 {
 	to_iso(&fdf->map);
-	scale(&fdf->map);
+	scale(&fdf->map, fdf->zoom);
 	shift(&fdf->map);
 }
 
 void	render(t_fdf *fdf)
 {
+	fdf->data.img = mlx_new_image(fdf->mlx, WIDTH, HEIGHT);
+	fdf->data.addr = mlx_get_data_addr(fdf->data.img, &fdf->data.bits_per_pixel, &fdf->data.line_length, &fdf->data.endian);
 	draw(&fdf->map, &fdf->data); 
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, fdf->data.img, 0, 0);
+	mlx_destroy_image(fdf->mlx, fdf->data.img);
 }
 int	loop(t_fdf *fdf)
 {
 	update(fdf);
 	render(fdf);
 	return (1);
+}
+
+int	key_hook(int keysym, t_fdf *fdf)
+{
+	
+	if (keysym == 65362)
+		fdf->zoom *= 1.1;
+	if (keysym == 65364)
+		fdf->zoom /= 1.1;
+	printf("%d\n", keysym);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -315,9 +332,9 @@ int	main(int argc, char **argv)
 		return 1;
 	fdf.mlx = mlx_init();
 	fdf.mlx_win = mlx_new_window(fdf.mlx, WIDTH, HEIGHT, "Fdf");
-	fdf.data.img = mlx_new_image(fdf.mlx, WIDTH, HEIGHT);
-	fdf.data.addr = mlx_get_data_addr(fdf.data.img, &fdf.data.bits_per_pixel, &fdf.data.line_length, &fdf.data.endian);
 	fdf.map = create_map(argv[1]);
+	fdf.zoom = 1;
+	mlx_key_hook(fdf.mlx_win, key_hook, &fdf);
 	mlx_loop_hook(fdf.mlx, loop, &fdf);
 	mlx_loop(fdf.mlx);
 	ft_putstr_fd("tchau",1);
