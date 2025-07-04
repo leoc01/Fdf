@@ -3,7 +3,7 @@ NAME = fdf
 CC = cc
 CFLAGS = -g -Wall -Werror -Wextra
 RM = rm -rf
-SRC = main.c
+SRC = main.c draw.c file.c calculations.c
 
 OBJ = $(SRC:.c=.o)
 
