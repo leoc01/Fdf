@@ -14,12 +14,12 @@
 #define	Z_FAC 2
 
 typedef struct	s_point {
-	int ax;
-	int ay;
-	int az;
+	int 	ax;
+	int 	ay;
+	int 	az;
 	float	px;
 	float	py;
-	int	color;
+	int		color;
 }	t_point;
 
 typedef struct	s_limits {
@@ -30,12 +30,18 @@ typedef struct	s_limits {
 }	t_limits;
 
 typedef	struct	s_map {
-	int			x;
-	int			y;
+	int			size_x;
+	int			size_y;
 	int			area;
 	t_point		*point;
 	t_limits	limits;
 }	t_map;
+
+typedef struct	s_params {
+	float	zoom;
+	int		cx;
+	int		cy;
+}	t_params;
 
 typedef struct	s_data {
 	void	*img;
@@ -46,13 +52,11 @@ typedef struct	s_data {
 }	t_data;
 
 typedef	struct	s_fdf {
-	void	*mlx;
-	void	*mlx_win;
-	t_data	data;
-	t_map	map;
-	float	zoom;
-	int		shx;
-	int		shy;
+	void		*mlx;
+	void		*mlx_win;
+	t_data		data;
+	t_map		map;
+	t_params	params;
 }	t_fdf;
 
 void	putpix(t_data *data, int x, int y, int color);
@@ -65,7 +69,7 @@ t_map	create_map(char *file);
 void	to_iso(t_map *map);
 void	set_limits(t_map *map);
 void	scale(t_map *map, float zoom);
-void	shift(t_map *map, int shx, int shy);
+void	shift(t_map *map, t_params params);
 void	draw(t_map *map, t_data *data);
 void	update(t_fdf *fdf);
 void	render(t_fdf *fdf);

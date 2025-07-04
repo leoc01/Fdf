@@ -16,11 +16,11 @@ void	get_points(t_point *point, t_map *map, char *file)
 		row = ft_split(line, ' ');
 		free(line);
 		i = 0;
-		while (i < map->x)
+		while (i < map->size_x)
 		{
-			point[i + (j * map->x)].ax = i;
-			point[i + (j * map->x)].ay = j;
-			point[i + (j * map->x)].az = ft_atoi(row[i]);
+			point[i + (j * map->size_x)].ax = i;
+			point[i + (j * map->size_x)].ay = j;
+			point[i + (j * map->size_x)].az = ft_atoi(row[i]);
 			i++;
 		}
 		j++;
@@ -37,21 +37,21 @@ t_map	create_map(char *file)
 	int		fd;
 	
 	fd = open(file, O_RDONLY);
-	map.x = 0;
-	map.y = 0;
+	map.size_x = 0;
+	map.size_y = 0;
 	line = get_next_line(fd);
 	row = ft_split(line, ' ');
-	while (row[map.x])
-		map.x++;
+	while (row[map.size_x])
+		map.size_x++;
 	while (line)
 	{
 		line = get_next_line(fd);
 		free(line);
-		map.y++;
+		map.size_y++;
 	}
 	close(fd);
-	map.area = map.x * map.y;
-	map.point = ft_calloc(map.x * map.y, sizeof(t_point));
+	map.area = map.size_x * map.size_y;
+	map.point = ft_calloc(map.size_x * map.size_y, sizeof(t_point));
 	get_points(map.point, &map, file);
 	return (map);
 }

@@ -10,7 +10,7 @@ void	draw(t_map *map, t_data *data)
 		if (map->point[i].ax)
 			d_line(data, map->point[i-1], map->point[i], 0x00FF00FF);
 		if (map->point[i].ay)
-			d_line(data, map->point[i], map->point[i-map->x], 0x00FF00FF);
+			d_line(data, map->point[i], map->point[i-map->size_x], 0x00FF00FF);
 		putpix(data, map->point[i].px, map->point[i].py, 0x00FFFFFF);
 		i++;
 	}
@@ -19,8 +19,9 @@ void	draw(t_map *map, t_data *data)
 void	update(t_fdf *fdf)
 {
 	to_iso(&fdf->map);
-	scale(&fdf->map, fdf->zoom);
-	shift(&fdf->map, fdf->shx, fdf->shy);
+	scale(&fdf->map, fdf->params.zoom);
+	set_limits(&fdf->map);
+	shift(&fdf->map, fdf->params);
 }
 
 void	render(t_fdf *fdf)
@@ -41,9 +42,9 @@ int	loop(t_fdf *fdf)
 int	key_hook(int keysym, t_fdf *fdf)
 {
 	if (keysym == 65362)
-		fdf->zoom *= 1.1;
+		fdf->params.zoom *= 1.1;
 	if (keysym == 65364)
-		fdf->zoom /= 1.1;
+		fdf->params.zoom /= 1.1;
 	printf("%d\n", keysym);
 	return (0);
 }
