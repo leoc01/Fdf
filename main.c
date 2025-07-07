@@ -45,17 +45,14 @@ int	loop(t_fdf *fdf)
 
 int	close_fdf(t_fdf *fdf, int code)
 {
-	if (fdf)
+	if (fdf->map.point)
+		free(fdf->map.point);
+	if (fdf->mlx_win)
+		mlx_destroy_window(fdf->mlx, fdf->mlx_win);
+	if (fdf->mlx)
 	{
-		if (fdf->map.point)
-			free(fdf->map.point);
-		if (fdf->mlx_win)
-			mlx_destroy_window(fdf->mlx, fdf->mlx_win);
-		if (fdf->mlx)
-		{
-			mlx_destroy_display(fdf->mlx);
-			free(fdf->mlx);
-		}
+		mlx_destroy_display(fdf->mlx);
+		free(fdf->mlx);
 	}
 	exit(code);
 }
@@ -113,7 +110,7 @@ void	start(t_fdf *fdf, char *file)
 	fdf->mlx_win = mlx_new_window(fdf->mlx, WIDTH, HEIGHT, "Fdf");
 	if (!fdf->mlx_win)
 		close_fdf(fdf, 1);
-	fdf->map = create_map(file);
+	create_map(fdf, file);
 	init_values(fdf);
 	mlx_hook(fdf->mlx_win, 17, (1L<<17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L<<0), key_press, fdf);
