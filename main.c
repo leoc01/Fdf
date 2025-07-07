@@ -17,7 +17,12 @@ void	draw(t_map *map, t_data *data)
 
 void	update(t_fdf *fdf)
 {
-	to_iso(&fdf->map, (-M_PI / 2) + fdf->params.anglez, fdf->params.anglex);
+	calculate_delta(fdf);
+	fdf->params.zoom += fdf->params.zoom_dir * 8 * fdf->params.delta;
+	fdf->params.shx += fdf->params.x_dir * sqrt(fdf->params.zoom) * 40 * fdf->params.delta;
+	fdf->params.shy += fdf->params.y_dir * sqrt(fdf->params.zoom) * 40 * fdf->params.delta;
+	fdf->params.z_angle += fdf->params.angle_dir * 0.5 * fdf->params.delta;
+	to_iso(&fdf->map, (-M_PI / 2) + fdf->params.z_angle);
 	scale(&fdf->map, fdf->params.zoom);
 	set_limits(&fdf->map);
 	shift(&fdf->map, fdf->params);
@@ -52,27 +57,48 @@ int	close_fdf(t_fdf *fdf, int code)
 	exit(code);
 }
 
-int	key_hook(int keysym, t_fdf *fdf)
+int	key_press(int keysym, t_fdf *fdf)
 {
-	if (keysym == 65307)
-		close_fdf(fdf, 0);
-	if (keysym == 65362)
-		fdf->params.zoom *= 1.1;
-	if (keysym == 65364)
-		fdf->params.zoom /= 1.1;
-	if (keysym == 100)
-		fdf->params.shx -= 10;
-	if (keysym == 97)
-		fdf->params.shx += 10;
-	if (keysym == 115)
-		fdf->params.shy -= 10;
-	if (keysym == 119)
-		fdf->params.shy += 10;
-	if (keysym == 65361)
-		fdf->params.anglez -= M_PI / 16;
-	if (keysym == 65363)
-		fdf->params.anglez += M_PI / 16;
+	if (keysym == UP)
+		fdf->params.zoom_dir = 1;
+	if (keysym == DOWN)
+		fdf->params.zoom_dir = -1;
+	if (keysym == D_KEY)
+		fdf->params.x_dir = 1;
+	if (keysym == A_KEY)
+		fdf->params.x_dir = -1;
+	if (keysym == S_KEY)
+		fdf->params.y_dir = 1;
+	if (keysym == W_KEY)
+		fdf->params.y_dir = -1;
+	if (keysym == LEFT)
+		fdf->params.angle_dir = 1;
+	if (keysym == RIGHT)
+		fdf->params.angle_dir = -1;
 	printf("%d\n", keysym);
+	return (0);
+}
+
+int	key_release(int keysym, t_fdf *fdf)
+{
+	if (keysym == UP)
+		fdf->params.zoom_dir = 0;
+	if (keysym == DOWN)
+		fdf->params.zoom_dir = 0;
+	if (keysym == ESC)
+		close_fdf(fdf, 0);
+	if (keysym == D_KEY)
+		fdf->params.x_dir = 0;
+	if (keysym == A_KEY)
+		fdf->params.x_dir = 0;
+	if (keysym == S_KEY)
+		fdf->params.y_dir = 0;
+	if (keysym == W_KEY)
+		fdf->params.y_dir = 0;
+	if (keysym == LEFT)
+		fdf->params.angle_dir = 0;
+	if (keysym == RIGHT)
+		fdf->params.angle_dir = 0;
 	return (0);
 }
 
@@ -87,7 +113,8 @@ void	start(t_fdf *fdf, char *file)
 	fdf->map = create_map(file);
 	init_values(fdf);
 	mlx_hook(fdf->mlx_win, 17, (1L<<17), close_fdf, fdf);
-	mlx_key_hook(fdf->mlx_win, key_hook, fdf);
+	mlx_hook(fdf->mlx_win, 02, (1L<<0), key_press, fdf);
+	mlx_hook(fdf->mlx_win, 03, (1L<<1), key_release, fdf);
 	mlx_loop_hook(fdf->mlx, loop, fdf);
 }
 

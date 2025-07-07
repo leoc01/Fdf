@@ -6,12 +6,24 @@
 #include <fcntl.h>
 #include "get_next_line.h"
 #include "./libft/libft.h"
+#include <sys/time.h>
 #include <stdio.h>
 
 #define WIDTH 1920
 #define HEIGHT 900
 #define PADDING 50
-#define	Z_FAC 7
+
+#define ESC 65307
+
+#define UP 65362
+#define	DOWN 65364
+#define	LEFT 65361
+#define	RIGHT 65363
+#define	W_KEY 119
+#define	A_KEY 97
+#define S_KEY 115
+#define D_KEY 100
+#define	Z_FAC 2
 
 typedef struct	s_point {
 	int 	ax;
@@ -38,13 +50,18 @@ typedef	struct	s_map {
 }	t_map;
 
 typedef struct	s_params {
-	float	zoom;
-	int		cx;
-	int		cy;
-	int		shx;
-	int		shy;
-	float	anglez;
-	float	anglex;
+	float		delta;
+	long long	last_frame_time;
+	float		zoom;
+	int			zoom_dir;
+	int			cx;
+	int			cy;
+	float		shx;
+	float		shy;
+	int			x_dir;
+	int			y_dir;
+	float		z_angle;
+	int			angle_dir;
 }	t_params;
 
 typedef struct	s_data {
@@ -70,7 +87,7 @@ void	d_line_high(t_data *data, t_point i, t_point f, int color);
 void	d_line(t_data *data, t_point i, t_point f, int color);
 void	get_points(t_point *point, t_map *map, char *file);
 t_map	create_map(char *file);
-void	to_iso(t_map *map, float anglez, float anglex);
+void	to_iso(t_map *map, float anglez);
 void	set_limits(t_map *map);
 void	scale(t_map *map, float zoom);
 void	shift(t_map *map, t_params params);
@@ -81,3 +98,4 @@ int		loop(t_fdf *fdf);
 int		key_hook(int keysym, t_fdf *fdf);
 void	start(t_fdf *fdf, char *file);
 void	init_values(t_fdf *fdf);
+void	calculate_delta(t_fdf *fdf);
