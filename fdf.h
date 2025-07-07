@@ -8,10 +8,10 @@
 #include "./libft/libft.h"
 #include <stdio.h>
 
-#define WIDTH 1300
-#define HEIGHT 690
+#define WIDTH 1920
+#define HEIGHT 900
 #define PADDING 50
-#define	Z_FAC 2
+#define	Z_FAC 7
 
 typedef struct	s_point {
 	int 	ax;
@@ -43,7 +43,8 @@ typedef struct	s_params {
 	int		cy;
 	int		shx;
 	int		shy;
-	float	angle;
+	float	anglez;
+	float	anglex;
 }	t_params;
 
 typedef struct	s_data {
@@ -69,7 +70,7 @@ void	d_line_high(t_data *data, t_point i, t_point f, int color);
 void	d_line(t_data *data, t_point i, t_point f, int color);
 void	get_points(t_point *point, t_map *map, char *file);
 t_map	create_map(char *file);
-void	to_iso(t_map *map, float angle);
+void	to_iso(t_map *map, float anglez, float anglex);
 void	set_limits(t_map *map);
 void	scale(t_map *map, float zoom);
 void	shift(t_map *map, t_params params);

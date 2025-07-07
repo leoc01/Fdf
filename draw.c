@@ -87,7 +87,7 @@ void	d_line(t_data *data, t_point i, t_point f, int color)
 
 	dx = fabs(f.px - i.px);
 	dy = fabs(f.py - i.py);
-	if (dx > dy)
+	if (dx >= dy)
 		d_line_low(data, i, f, color);
 	else
 		d_line_high(data, i, f, color);

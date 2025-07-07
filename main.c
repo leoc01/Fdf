@@ -17,7 +17,7 @@ void	draw(t_map *map, t_data *data)
 
 void	update(t_fdf *fdf)
 {
-	to_iso(&fdf->map, (-M_PI / 2) + fdf->params.angle);
+	to_iso(&fdf->map, (-M_PI / 2) + fdf->params.anglez, fdf->params.anglex);
 	scale(&fdf->map, fdf->params.zoom);
 	set_limits(&fdf->map);
 	shift(&fdf->map, fdf->params);
@@ -38,8 +38,17 @@ int	loop(t_fdf *fdf)
 	return (1);
 }
 
+void	close_fdf(t_fdf *fdf)
+{
+	(void)fdf;
+	mlx_destroy_window(fdf->mlx, fdf->mlx_win);
+	exit(0);
+}
+
 int	key_hook(int keysym, t_fdf *fdf)
 {
+	if (keysym == 65307)
+		close_fdf(fdf);
 	if (keysym == 65362)
 		fdf->params.zoom *= 1.1;
 	if (keysym == 65364)
@@ -53,9 +62,9 @@ int	key_hook(int keysym, t_fdf *fdf)
 	if (keysym == 119)
 		fdf->params.shy += 10;
 	if (keysym == 65361)
-		fdf->params.angle -= M_PI / 16;
+		fdf->params.anglez -= M_PI / 16;
 	if (keysym == 65363)
-		fdf->params.angle += M_PI / 16;
+		fdf->params.anglez += M_PI / 16;
 	printf("%d\n", keysym);
 	return (0);
 }

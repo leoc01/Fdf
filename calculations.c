@@ -1,12 +1,14 @@
 #include "fdf.h"
 
-void to_iso(t_map *map, float angle)
+void to_iso(t_map *map, float anglez, float anglex)
 {
    int i;
-    float cos_a = cos(angle);
-    float sin_a = sin(angle);
+    float cos_a = cos(anglez);
+    float sin_a = sin(anglez);
     float rotated_x, rotated_y;
-    
+   
+	(void)anglex;
+
     i = 0;
     while (i < map->area)
     {
@@ -72,15 +74,16 @@ void	shift(t_map *map, t_params params)
 
 void	init_values(t_fdf *fdf)
 {
-	fdf->params.angle = 0;
-	to_iso(&fdf->map, (-M_PI / 2) * fdf->params.angle);
+	fdf->params.anglez = 0;
+	fdf->params.anglex = 2;
+	to_iso(&fdf->map, (-M_PI / 2) * fdf->params.anglez, fdf->params.anglex);
 	set_limits(&fdf->map);
 	fdf->params.zoom = (WIDTH - PADDING * 2.0f) / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min);
 	if (WIDTH / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min) > HEIGHT / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min))
 		fdf->params.zoom = (HEIGHT - PADDING * 2.0f) / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min);
 	fdf->params.shx = 0;
 	fdf->params.shy = 0;
-		scale(&fdf->map, fdf->params.zoom);
+	scale(&fdf->map, fdf->params.zoom);
 	set_limits(&fdf->map);
 	shift(&fdf->map, fdf->params);
 }
