@@ -45,14 +45,17 @@ int	loop(t_fdf *fdf)
 
 int	close_fdf(t_fdf *fdf, int code)
 {
-	if (fdf->map.point)
-		free(fdf->map.point);
-	if (fdf->mlx_win)
-		mlx_destroy_window(fdf->mlx, fdf->mlx_win);
-	if (fdf->mlx)
+	if (fdf)
 	{
-		mlx_destroy_display(fdf->mlx);
-		free(fdf->mlx);
+		if (fdf->map.point)
+			free(fdf->map.point);
+		if (fdf->mlx_win)
+			mlx_destroy_window(fdf->mlx, fdf->mlx_win);
+		if (fdf->mlx)
+		{
+			mlx_destroy_display(fdf->mlx);
+			free(fdf->mlx);
+		}
 	}
 	exit(code);
 }

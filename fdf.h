@@ -99,3 +99,4 @@ int		key_hook(int keysym, t_fdf *fdf);
 void	start(t_fdf *fdf, char *file);
 void	init_values(t_fdf *fdf);
 void	calculate_delta(t_fdf *fdf);
+int		close_fdf(t_fdf *fdf, int code);

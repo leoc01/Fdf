@@ -40,6 +40,8 @@ t_map	create_map(char *file)
 	int		fd;
 	
 	fd = open(file, O_RDONLY);
+	if (fd < 3)
+		close_fdf(NULL, 1);
 	map.size_x = 0;
 	map.size_y = 0;
 	line = get_next_line(fd);
