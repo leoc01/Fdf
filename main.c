@@ -38,17 +38,24 @@ int	loop(t_fdf *fdf)
 	return (1);
 }
 
-void	close_fdf(t_fdf *fdf)
+int	close_fdf(t_fdf *fdf, int code)
 {
-	(void)fdf;
-	mlx_destroy_window(fdf->mlx, fdf->mlx_win);
-	exit(0);
+	if (fdf->map.point)
+		free(fdf->map.point);
+	if (fdf->mlx_win)
+		mlx_destroy_window(fdf->mlx, fdf->mlx_win);
+	if (fdf->mlx)
+	{
+		mlx_destroy_display(fdf->mlx);
+		free(fdf->mlx);
+	}
+	exit(code);
 }
 
 int	key_hook(int keysym, t_fdf *fdf)
 {
 	if (keysym == 65307)
-		close_fdf(fdf);
+		close_fdf(fdf, 0);
 	if (keysym == 65362)
 		fdf->params.zoom *= 1.1;
 	if (keysym == 65364)
@@ -72,9 +79,14 @@ int	key_hook(int keysym, t_fdf *fdf)
 void	start(t_fdf *fdf, char *file)
 {
 	fdf->mlx = mlx_init();
+	if (!fdf->mlx)
+		close_fdf(fdf, 1);
 	fdf->mlx_win = mlx_new_window(fdf->mlx, WIDTH, HEIGHT, "Fdf");
+	if (!fdf->mlx_win)
+		close_fdf(fdf, 1);
 	fdf->map = create_map(file);
 	init_values(fdf);
+	mlx_hook(fdf->mlx_win, 17, (1L<<17), close_fdf, fdf);
 	mlx_key_hook(fdf->mlx_win, key_hook, fdf);
 	mlx_loop_hook(fdf->mlx, loop, fdf);
 }
@@ -87,5 +99,5 @@ int	main(int argc, char **argv)
 		return 1;
 	start(&fdf, argv[1]);
 	mlx_loop(fdf.mlx);
-	return(0);
+	return (0);
 }
