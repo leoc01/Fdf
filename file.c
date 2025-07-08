@@ -7,6 +7,7 @@ void	get_points(t_map *map, char *file, t_fdf *fdf)
 	int		i;
 	int		j;
 	int		fd;
+	char	**color;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 3)
@@ -23,7 +24,15 @@ void	get_points(t_map *map, char *file, t_fdf *fdf)
 			map->point[i + (j * map->size_x)].ax = i;
 			map->point[i + (j * map->size_x)].ay = j;
 			map->point[i + (j * map->size_x)].az = ft_atoi(row[i]);
-			map->point[i + (j * map->size_x)].color = 0x00FF00FF;
+			map->point[i + (j * map->size_x)].color = 0x00FFFFFF;
+			color = ft_split(row[i], ',');
+			free(color[0]);
+			if (color[1])
+			{
+				printf("%s\n", color[1]);
+				free(color[1]);
+			}
+			free(color);
 			free(row[i]);
 			i++;
 		}
