@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "get_next_line.h"
-#include "./libft/libft.h"
+#include <libft.h>
 #include <sys/time.h>
 #include <stdio.h>
 
