@@ -82,9 +82,9 @@ typedef	struct	s_fdf {
 
 void	putpix(t_data *data, int x, int y, int color);
 void	swap(t_point *i, t_point *f);
-void	d_line_low(t_data *data, t_point i, t_point f, int color);
-void	d_line_high(t_data *data, t_point i, t_point f, int color);
-void	d_line(t_data *data, t_point i, t_point f, int color);
+void	d_line_low(t_data *data, t_point i, t_point f);
+void	d_line_high(t_data *data, t_point i, t_point f);
+void	d_line(t_data *data, t_point i, t_point f);
 void	get_points(t_map *map, char *file, t_fdf *fdf);
 void	create_map(t_fdf *fdf, char *file);
 void	to_iso(t_map *map, float anglez);

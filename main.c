@@ -8,9 +8,9 @@ void	draw(t_map *map, t_data *data)
 	while (i < map->area)
 	{
 		if (map->point[i].ax)
-			d_line(data, map->point[i-1], map->point[i], 0x00FFFFFF);
+			d_line(data, map->point[i-1], map->point[i]);
 		if (map->point[i].ay)
-			d_line(data, map->point[i], map->point[i-map->size_x], 0x00FFFFFF);
+			d_line(data, map->point[i], map->point[i-map->size_x]);
 		i++;
 	}
 }

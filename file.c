@@ -23,6 +23,7 @@ void	get_points(t_map *map, char *file, t_fdf *fdf)
 			map->point[i + (j * map->size_x)].ax = i;
 			map->point[i + (j * map->size_x)].ay = j;
 			map->point[i + (j * map->size_x)].az = ft_atoi(row[i]);
+			map->point[i + (j * map->size_x)].color = 0x00FF00FF;
 			free(row[i]);
 			i++;
 		}

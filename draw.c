@@ -22,7 +22,7 @@ void	swap(t_point *i, t_point *f)
 	f->py = aux.py;
 }
 
-void	d_line_low(t_data *data, t_point i, t_point f, int color)
+void	d_line_low(t_data *data, t_point i, t_point f)
 {
 	int dx;
 	int dy;
@@ -40,7 +40,7 @@ void	d_line_low(t_data *data, t_point i, t_point f, int color)
 	d = 2 * dy - dx;
 	while (i.px <= f.px)
 	{
-		putpix(data, i.px++, i.py, color);
+		putpix(data, i.px++, i.py, f.color);
 		if (d >= 0)
 		{
 			i.py += dir;
@@ -51,7 +51,7 @@ void	d_line_low(t_data *data, t_point i, t_point f, int color)
 	}
 }
 
-void	d_line_high(t_data *data, t_point i, t_point f, int color)
+void	d_line_high(t_data *data, t_point i, t_point f)
 {
 	int dx;
 	int dy;
@@ -69,7 +69,7 @@ void	d_line_high(t_data *data, t_point i, t_point f, int color)
 	d = 2 * dx - dy;
 	while (i.py <= f.py)
 	{
-		putpix(data, i.px, i.py++, color);
+		putpix(data, i.px, i.py++, f.color);
 		if (d >= 0)
 		{
 			i.px += dir;
@@ -80,7 +80,7 @@ void	d_line_high(t_data *data, t_point i, t_point f, int color)
 	}
 }
 
-void	d_line(t_data *data, t_point i, t_point f, int color)
+void	d_line(t_data *data, t_point i, t_point f)
 {
 	int	dx;
 	int dy;
@@ -88,7 +88,7 @@ void	d_line(t_data *data, t_point i, t_point f, int color)
 	dx = fabs(f.px - i.px);
 	dy = fabs(f.py - i.py);
 	if (dx >= dy)
-		d_line_low(data, i, f, color);
+		d_line_low(data, i, f);
 	else
-		d_line_high(data, i, f, color);
+		d_line_high(data, i, f);
 }
