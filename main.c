@@ -75,7 +75,6 @@ int	key_press(int keysym, t_fdf *fdf)
 		fdf->params.angle_dir = 1;
 	if (keysym == RIGHT)
 		fdf->params.angle_dir = -1;
-	printf("%d\n", keysym);
 	return (0);
 }
 

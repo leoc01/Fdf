@@ -23,7 +23,7 @@
 #define	A_KEY 97
 #define S_KEY 115
 #define D_KEY 100
-#define	Z_FAC 2
+#define	Z_FAC 7
 
 typedef struct	s_point {
 	int 	ax;
