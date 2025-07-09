@@ -1,5 +1,25 @@
 #include "fdf.h"
 
+int	hex_to_color(char *n)
+{
+	char	*base = "00112233445566778899aAbBcCdDeEfF";
+	int		len = 6;
+	int		color = 0;
+	int		i = 2;
+	int		num;
+
+	if (n[0] != '0' && (n[1] != 'x' || n[1] != 'X'))
+		return (0x00FFFFFF);
+	while (n[i] && n[i] != '\n')
+	{
+		num = (ft_strchr(base, n[i]) - &base[0])/2 * pow(16, (len - 1));
+		color += num;
+		len--;
+		i++;
+	}
+	return (color);
+}
+
 void	get_points(t_map *map, char *file, t_fdf *fdf)
 {
 	char	*line;
@@ -29,7 +49,7 @@ void	get_points(t_map *map, char *file, t_fdf *fdf)
 			free(color[0]);
 			if (color[1])
 			{
-				printf("%s\n", color[1]);
+				map->point[i + (j * map->size_x)].color = hex_to_color(color[1]);
 				free(color[1]);
 			}
 			free(color);
@@ -61,6 +81,7 @@ void	create_map(t_fdf *fdf, char *file)
 	while (row[fdf->map.size_x])
 		free(row[fdf->map.size_x++]);
 	free(row);
+	fdf->map.size_y++;
 	while (line)
 	{
 		free(line);
