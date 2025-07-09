@@ -40,7 +40,7 @@ void	d_line_low(t_data *data, t_point i, t_point f)
 	d = 2 * dy - dx;
 	while (i.px <= f.px)
 	{
-		putpix(data, i.px++, i.py, f.color);
+		putpix(data, i.px++, i.py, get_color(&i, &f));
 		if (d >= 0)
 		{
 			i.py += dir;
@@ -69,7 +69,7 @@ void	d_line_high(t_data *data, t_point i, t_point f)
 	d = 2 * dx - dy;
 	while (i.py <= f.py)
 	{
-		putpix(data, i.px, i.py++, f.color);
+		putpix(data, i.px, i.py++, get_color(&i, &f));
 		if (d >= 0)
 		{
 			i.px += dir;
