@@ -26,9 +26,9 @@
 #define	Z_FAC 2
 
 typedef struct	s_point {
-	int 	ax;
-	int 	ay;
-	int 	az;
+	float 	ax;
+	float 	ay;
+	float 	az;
 	float	px;
 	float	py;
 	int		color;
