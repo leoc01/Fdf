@@ -33,9 +33,9 @@ typedef struct	s_color {
 }	t_color;
 
 typedef struct	s_step {
-	int r;
-	int g;
-	int b;
+	float r;
+	float g;
+	float b;
 }	t_step;
 
 typedef struct	s_point {

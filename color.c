@@ -40,8 +40,8 @@ t_step	def_step(t_point *i, t_point *f, int size)
 
 int	 get_color(t_step *step, t_color color, int current)
 {	
-	color.r += current * step->r;
-	color.g += current * step->g;
-	color.b += current * step->b;
+	color.r = (int)(color.r + (current * step->r)) & 0xFF;
+	color.g = (int)(color.g + (current * step->g)) & 0xFF;
+	color.b = (int)(color.b + (current * step->b)) & 0xFF;
 	return (to_rgb(&color));
 }

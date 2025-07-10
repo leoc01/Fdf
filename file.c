@@ -2,18 +2,19 @@
 
 t_color	hex_to_color(char *n)
 {
-	char	*base = "00112233445566778899aAbBcCdDeEfF";
+	char	*base = "0123456789ABCDEF";
 	int		len;
 	t_color	color;
 	int		i;
 
 	len = 6;
 	i = 2;
+	color.rgb = 0;
 	if (n[0] != '0' && (n[1] != 'x' || n[1] != 'X'))
 		color.rgb = 0x00FFFFFF;
 	while (n[i] && n[i] != '\n')
 	{
-		color.rgb += (ft_strchr(base, n[i]) - &base[0])/2 * pow(16, (len - 1));
+		color.rgb += (ft_strchr(base, n[i]) - &base[0]) * pow(16, (len - 1));
 		len--;
 		i++;
 	}
