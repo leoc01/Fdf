@@ -100,7 +100,6 @@ void	to_iso(t_map *map, float anglez);
 void	scale(t_map *map, float zoom);
 void	shift(t_map *map, t_params params);
 // draw
-void	draw(t_map *map, t_data *data);
 void	putpix(t_data *data, int x, int y, int color);
 void	swap(t_point *i, t_point *f);
 void	d_line_low(t_data *data, t_point i, t_point f);
@@ -109,7 +108,7 @@ void	d_line(t_data *data, t_point i, t_point f);
 // loop
 void	update(t_fdf *fdf);
 void	render(t_fdf *fdf);
-int		key_hook(int keysym, t_fdf *fdf);
+void	draw(t_map *map, t_data *data);
 // hooks
 int		key_press(int keysyn, t_fdf *fdf);
 int		key_release(int keysyn, t_fdf *fdf);
