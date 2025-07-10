@@ -87,7 +87,7 @@ void	calculate_delta(t_fdf *fdf)
 	fdf->params.last_frame_time = now;
 }
 
-void	init_values(t_fdf *fdf)
+void	init_params(t_fdf *fdf)
 {
 	fdf->params.last_frame_time = get_time();
 	fdf->params.delta = 0;

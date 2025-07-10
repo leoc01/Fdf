@@ -44,12 +44,12 @@ void	get_points(t_map *map, char *file, t_fdf *fdf)
 			map->point[i + (j * map->size_x)].ax = i;
 			map->point[i + (j * map->size_x)].ay = j;
 			map->point[i + (j * map->size_x)].az = ft_atoi(row[i]);
-			map->point[i + (j * map->size_x)].color = 0x00FFFFFF;
+			map->point[i + (j * map->size_x)].color.rgb = 0x00FFFFFF;
 			color = ft_split(row[i], ',');
 			free(color[0]);
 			if (color[1])
 			{
-				map->point[i + (j * map->size_x)].color = hex_to_color(color[1]);
+				map->point[i + (j * map->size_x)].color.rgb = hex_to_color(color[1]);
 				free(color[1]);
 			}
 			free(color);

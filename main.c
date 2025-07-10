@@ -110,7 +110,7 @@ void	start(t_fdf *fdf, char *file)
 	if (!fdf->mlx_win)
 		close_fdf(fdf, 1);
 	create_map(fdf, file);
-	init_values(fdf);
+	init_params(fdf);
 	mlx_hook(fdf->mlx_win, 17, (1L<<17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L<<0), key_press, fdf);
 	mlx_hook(fdf->mlx_win, 03, (1L<<1), key_release, fdf);

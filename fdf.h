@@ -25,13 +25,20 @@
 #define D_KEY 100
 #define	Z_FAC 2
 
+typedef struct	s_color {
+	int	rgb;
+	int	r;
+	int	g;
+	int	b;
+}	t_color;
+
 typedef struct	s_point {
 	float 	ax;
 	float 	ay;
 	float 	az;
 	float	px;
 	float	py;
-	int		color;
+	t_color	color;
 }	t_point;
 
 typedef struct	s_limits {
@@ -80,24 +87,32 @@ typedef	struct	s_fdf {
 	t_params	params;
 }	t_fdf;
 
+// initial
+void	start(t_fdf *fdf, char *file);
+void	create_map(t_fdf *fdf, char *file);
+void	init_params(t_fdf *fdf);
+void	get_points(t_map *map, char *file, t_fdf *fdf);
+int		hex_to_color(char *n);
+// calculation
+void	calculate_delta(t_fdf *fdf);
+void	set_limits(t_map *map);
+void	to_iso(t_map *map, float anglez);
+void	scale(t_map *map, float zoom);
+void	shift(t_map *map, t_params params);
+// draw
+void	draw(t_map *map, t_data *data);
 void	putpix(t_data *data, int x, int y, int color);
 void	swap(t_point *i, t_point *f);
 void	d_line_low(t_data *data, t_point i, t_point f);
 void	d_line_high(t_data *data, t_point i, t_point f);
 void	d_line(t_data *data, t_point i, t_point f);
-void	get_points(t_map *map, char *file, t_fdf *fdf);
-void	create_map(t_fdf *fdf, char *file);
-void	to_iso(t_map *map, float anglez);
-void	set_limits(t_map *map);
-void	scale(t_map *map, float zoom);
-void	shift(t_map *map, t_params params);
-void	draw(t_map *map, t_data *data);
+// loop
 void	update(t_fdf *fdf);
 void	render(t_fdf *fdf);
-int		loop(t_fdf *fdf);
 int		key_hook(int keysym, t_fdf *fdf);
-void	start(t_fdf *fdf, char *file);
-void	init_values(t_fdf *fdf);
-void	calculate_delta(t_fdf *fdf);
+// hooks
+int		key_press(int keysyn, t_fdf *fdf);
+int		key_release(int keysyn, t_fdf *fdf);
+int		loop(t_fdf *fdf);
 int		close_fdf(t_fdf *fdf, int code);
-int		get_color(t_point *i, t_point *f);
+//int		get_color(t_point *i, t_point *f);
