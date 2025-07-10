@@ -12,49 +12,36 @@
 
 #include "fdf.h"
 
-static int	rgb_from(char rgb, int color)
+int	rgb_from(char rgb, int color)
 {
-	if (rgb = 'r')
+	if (rgb == 'r')
 		return ((color >> 16) & 0xFF);
-	if (rgb = 'g')
+	if (rgb == 'g')
 		return ((color >> 8) & 0xFF);
-	if (rgb = 'b')
+	if (rgb == 'b')
 		return ((color) & 0xFF);
+	return (0xFF);
 }
 
-static float max(float a, float b)
+int	to_rgb(t_color *color)
 {
-	if (a >= b)
-		return (a);
-	return (b);
+	return ((color->r << 16) | (color->g << 8) | (color->b));
 }
 
-t_step	def_step(t_point i, t_point f)
+t_step	def_step(t_point *i, t_point *f, int size)
 {
 	t_step	step;
 
-	step.r = (get_rgb('r', f.color) - get_rgb('r', i.color)) / size;
-	step.g = (get_rgb('g', f.color) - get_rgb('g', i.color)) / size;
-	step.b = (get_rgb('b', f.color) - get_rgb('b', i.color)) / size;
+	step.r = (f->color.r - i->color.r) / size;
+	step.g = (f->color.g - i->color.g) / size;
+	step.b = (f->color.b - i->color.b) / size;
+	return (step);
 }
 
-int	get_color(t_point *i, t_point *f, int current_p, int size)
-{
-	static int	step;
-	int			color;
-
-	if (0)
-	{
-		step = ((f->color) - (i->color))/size;
-		printf("step: %d\n", step);
-	}
-	color = (i->color + current_p * step);
-	current_p++;
-	if (0)
-	{
-		printf("color\n");
-		step = 0;
-		current_p = 0;
-	}
-	return (0x00FFFFFF);
+int	 get_color(t_step *step, t_color color, int current)
+{	
+	color.r += current * step->r;
+	color.g += current * step->g;
+	color.b += current * step->b;
+	return (to_rgb(&color));
 }

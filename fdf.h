@@ -32,6 +32,12 @@ typedef struct	s_color {
 	int	b;
 }	t_color;
 
+typedef struct	s_step {
+	int r;
+	int g;
+	int b;
+}	t_step;
+
 typedef struct	s_point {
 	float 	ax;
 	float 	ay;
@@ -92,7 +98,10 @@ void	start(t_fdf *fdf, char *file);
 void	create_map(t_fdf *fdf, char *file);
 void	init_params(t_fdf *fdf);
 void	get_points(t_map *map, char *file, t_fdf *fdf);
-int		hex_to_color(char *n);
+t_color	hex_to_color(char *n);
+int		rgb_from(char rgb, int color);
+t_step	def_step(t_point *i, t_point *f, int size);
+int	get_color(t_step *step, t_color color, int current);
 // calculation
 void	calculate_delta(t_fdf *fdf);
 void	set_limits(t_map *map);
@@ -114,4 +123,3 @@ int		key_press(int keysyn, t_fdf *fdf);
 int		key_release(int keysyn, t_fdf *fdf);
 int		loop(t_fdf *fdf);
 int		close_fdf(t_fdf *fdf, int code);
-//int		get_color(t_point *i, t_point *f);
