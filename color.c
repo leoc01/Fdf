@@ -28,18 +28,27 @@ int	to_rgb(t_color *color)
 	return ((color->r << 16) | (color->g << 8) | (color->b));
 }
 
-t_step	def_step(t_point *i, t_point *f, int size)
+t_step	def_step(t_point *i, t_point *f, float size)
 {
 	t_step	step;
-
-	step.r = (f->color.r - i->color.r) / size;
-	step.g = (f->color.g - i->color.g) / size;
-	step.b = (f->color.b - i->color.b) / size;
+	
+	if (i->color.rgb == f->color.rgb)
+	{
+		step.r = 0;
+		step.g = 0;
+		step.b = 0;
+	}
+	else
+	{
+		step.r = (f->color.r - i->color.r) / size;
+		step.g = (f->color.g - i->color.g) / size;
+		step.b = (f->color.b - i->color.b) / size;
+	}
 	return (step);
 }
 
 int	 get_color(t_step *step, t_color color, int current)
-{	
+{
 	color.r = (int)(color.r + (current * step->r)) & 0xFF;
 	color.g = (int)(color.g + (current * step->g)) & 0xFF;
 	color.b = (int)(color.b + (current * step->b)) & 0xFF;

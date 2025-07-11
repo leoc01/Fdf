@@ -1,7 +1,7 @@
 NAME = fdf
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -flto -fstrict-aliasing -ffast-math
 RM = rm -rf
 SRC = main.c draw.c file.c calculations.c color.c
 
