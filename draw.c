@@ -22,27 +22,21 @@ void	swap(t_point *i, t_point *f)
 	f->py = aux.py;
 }
 
-void	d_line_low(t_data *data, t_point i, t_point f)
+void	d_line_low(t_data *data, t_point i, t_point f, float dx, float dy)
 {
-	int dx;
-	int dy;
 	int	dir;
 	int	d;
 	t_step step;
 	int color;
 	int	current;
 
-	step = def_step(&i, &f, f.px - i.px);
-	if (i.px > f.px)
-		swap(&i, &f);
 	dir = 1;
-	dx = f.px - i.px;
-	dy = f.py - i.py;
 	if (dy < 0)
 		dir = -1;
 	dy *= dir;
 	d = 2 * dy - dx;
-	current = 0;
+	current = 1;
+	step = def_step(&i, &f, dx);
 	while (i.px <= f.px)
 	{
 		color = get_color(&step, i.color, current);
@@ -59,27 +53,21 @@ void	d_line_low(t_data *data, t_point i, t_point f)
 	}
 }
 
-void	d_line_high(t_data *data, t_point i, t_point f)
+void	d_line_high(t_data *data, t_point i, t_point f, float dx, float dy)
 {
-	int		dx;
-	int		dy;
 	int		dir;
 	int		d;
 	t_step step;
 	int color;
 	int	current;
 
-	step = def_step(&i, &f, f.py - i.py);
-	if (i.py > f.py)
-		swap(&i, &f);
 	dir = 1;
-	dx = f.px - i.px;
-	dy = f.py - i.py;
 	if (dx < 0)
 		dir = -1;
 	dx *= dir;
 	d = 2 * dx - dy;
 	current = 0;
+	step = def_step(&i, &f, dy);
 	while (i.py <= f.py)
 	{
 		color = get_color(&step, i.color, current);
@@ -98,13 +86,23 @@ void	d_line_high(t_data *data, t_point i, t_point f)
 
 void	d_line(t_data *data, t_point i, t_point f)
 {
-	int	dx;
-	int dy;
+	float	dx;
+	float	dy;
 
-	dx = fabs(f.px - i.px);
-	dy = fabs(f.py - i.py);
-	if (dx >= dy)
-		d_line_low(data, i, f);
+	dx = f.px - i.px;
+	dy = f.py - i.py;
+	if (fabs(dx) >= fabs(dy))
+	{
+		if (i.px > f.px)
+			d_line_low(data, i, f, dx, dy);
+		else
+			d_line_low(data, i, f, dx, dy);
+	}
 	else
-		d_line_high(data, i, f);
+	{
+		if (i.py > f.py)
+			d_line_high(data, i, f, dx, dy);
+		else
+			d_line_high(data, i, f, dx, dy);
+	}
 }

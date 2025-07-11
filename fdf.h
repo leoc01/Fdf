@@ -23,7 +23,7 @@
 #define	A_KEY 97
 #define S_KEY 115
 #define D_KEY 100
-#define	Z_FAC 2
+#define	Z_FAC 6
 
 typedef struct	s_color {
 	int	rgb;
@@ -111,8 +111,8 @@ void	shift(t_map *map, t_params params);
 // draw
 void	putpix(t_data *data, int x, int y, int color);
 void	swap(t_point *i, t_point *f);
-void	d_line_low(t_data *data, t_point i, t_point f);
-void	d_line_high(t_data *data, t_point i, t_point f);
+void	d_line_low(t_data *data, t_point i, t_point f, float dx, float dy);
+void	d_line_high(t_data *data, t_point i, t_point f, float dx, float dy);
 void	d_line(t_data *data, t_point i, t_point f);
 // loop
 void	update(t_fdf *fdf);
