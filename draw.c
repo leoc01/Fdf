@@ -36,7 +36,7 @@ void	d_line_low(t_data *data, t_point i, t_point f, float dx, float dy)
 	dy *= dir;
 	d = 2 * dy - dx;
 	current = 1;
-	step = def_step(&i, &f, dx);
+	step = def_step(&i, &f, fabs(dx));
 	while (i.px <= f.px)
 	{
 		color = get_color(&step, i.color, current);
@@ -67,7 +67,7 @@ void	d_line_high(t_data *data, t_point i, t_point f, float dx, float dy)
 	dx *= dir;
 	d = 2 * dx - dy;
 	current = 0;
-	step = def_step(&i, &f, dy);
+	step = def_step(&i, &f, fabs(dy));
 	while (i.py <= f.py)
 	{
 		color = get_color(&step, i.color, current);
@@ -92,17 +92,7 @@ void	d_line(t_data *data, t_point i, t_point f)
 	dx = f.px - i.px;
 	dy = f.py - i.py;
 	if (fabs(dx) >= fabs(dy))
-	{
-		if (i.px > f.px)
-			d_line_low(data, i, f, dx, dy);
-		else
-			d_line_low(data, i, f, dx, dy);
-	}
+		d_line_low(data, i, f, dx, dy);
 	else
-	{
-		if (i.py > f.py)
-			d_line_high(data, i, f, dx, dy);
-		else
-			d_line_high(data, i, f, dx, dy);
-	}
+		d_line_high(data, i, f, dx, dy);
 }
