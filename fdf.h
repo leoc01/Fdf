@@ -9,9 +9,9 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-#define WIDTH 1920
-#define HEIGHT 900
-#define PADDING 50
+#define WIDTH 1365
+#define HEIGHT 699
+#define PADDING 100
 
 #define ESC 65307
 
