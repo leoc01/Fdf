@@ -38,6 +38,15 @@ typedef struct	s_step {
 	float b;
 }	t_step;
 
+typedef struct	s_line {
+	t_point	i;
+	t_point	f;
+	float	dx;
+	float	dy;
+	int		x_dir;
+	int		y_dir;
+}
+
 typedef struct	s_point {
 	float 	ax;
 	float 	ay;
@@ -98,10 +107,12 @@ void	start(t_fdf *fdf, char *file);
 void	create_map(t_fdf *fdf, char *file);
 void	init_params(t_fdf *fdf);
 void	get_points(t_map *map, char *file, t_fdf *fdf);
+// color
 t_color	hex_to_color(char *n);
+int		get_color(t_step *step, t_color color, int current);
 int		rgb_from(char rgb, int color);
 t_step	def_step(t_point *i, t_point *f, float size);
-int	get_color(t_step *step, t_color color, int current);
+
 // calculation
 void	calculate_delta(t_fdf *fdf);
 void	set_limits(t_map *map);

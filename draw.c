@@ -85,7 +85,7 @@ void	d_line_high(t_data *data, t_point i, t_point f, float dx, float dy)
 		x_dir = -1;
 	dx *= x_dir;
 	d = 2 * dx - dy;
-	current = 1;
+	current = f.py - i.py;
 	while (i.py <= f.py)
 	{
 		color = get_color(&step, i.color, current);
