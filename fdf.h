@@ -14,7 +14,6 @@
 #define PADDING 100
 
 #define ESC 65307
-
 #define UP 65362
 #define	DOWN 65364
 #define	LEFT 65361
@@ -23,6 +22,7 @@
 #define	A_KEY 97
 #define S_KEY 115
 #define D_KEY 100
+
 #define	Z_FAC 6
 
 typedef struct	s_color {
@@ -33,19 +33,10 @@ typedef struct	s_color {
 }	t_color;
 
 typedef struct	s_step {
-	float r;
-	float g;
-	float b;
+	float	r;
+	float	g;
+	float	b;
 }	t_step;
-
-typedef struct	s_line {
-	t_point	i;
-	t_point	f;
-	float	dx;
-	float	dy;
-	int		x_dir;
-	int		y_dir;
-}
 
 typedef struct	s_point {
 	float 	ax;
@@ -55,6 +46,16 @@ typedef struct	s_point {
 	float	py;
 	t_color	color;
 }	t_point;
+
+typedef struct	s_line {
+	t_point	i;
+	t_point	f;
+	float	dx;
+	float	dy;
+	int		x_dir;
+	int		y_dir;
+	t_color	init_color;
+}	t_line;
 
 typedef struct	s_limits {
 	float	x_max;
@@ -122,8 +123,8 @@ void	shift(t_map *map, t_params params);
 // draw
 void	putpix(t_data *data, int x, int y, int color);
 void	swap(t_point *i, t_point *f);
-void	d_line_low(t_data *data, t_point i, t_point f, float dx, float dy);
-void	d_line_high(t_data *data, t_point i, t_point f, float dx, float dy);
+void	d_line_low(t_data *data, t_line *line);
+void	d_line_high(t_data *data, t_line *line);
 void	d_line(t_data *data, t_point i, t_point f);
 // loop
 void	update(t_fdf *fdf);

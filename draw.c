@@ -22,95 +22,87 @@ void	swap(t_point *i, t_point *f)
 	f->py = aux.py;
 }
 
-void	d_line_low(t_data *data, t_point i, t_point f, float dx, float dy)
+void	d_line_low(t_data *data, t_line *line)
 {
-	int	x_dir;
-	int		y_dir;
 	int	d;
 	t_step step;
 	int color;
 	int	current;
 
-	x_dir = 1;
-	if (i.px > f.px)
+	step = def_step(&line->i, &line->f, line->dx);
+	if (line->i.py > line->f.py)
+		line->y_dir = -1;
+	d = 2 * line->dy - line->dx;
+	current = 0;
+	while (line->i.px <= line->f.px)
 	{
-		swap(&i, &f);
-		dy = -dy;
-		dx = -dx;
-		x_dir = -1;
-	}
-	step = def_step(&i, &f, dx);
-	y_dir = 1;
-	if (dy < 0)
-		y_dir = -1;
-	dy *= y_dir;
-	d = 2 * dy - dx;
-	current = f.px - i.px;
-	while (i.px <= f.px)
-	{
-		color = get_color(&step, i.color, current);
-		putpix(data, i.px, i.py, color);
+		color = get_color(&step, line->i.color, current);
+		putpix(data, line->i.px, line->i.py, color);
 		if (d >= 0)
 		{
-			i.py += y_dir;
-			d += dy - dx;
+			line->i.py += line->y_dir;
+			d += line->dy - line->dx;
 		}
 		else
-			d += dy;
-		i.px++;
-		current += x_dir;
+			d += line->dy;
+		line->i.px++;
+		current++;
 	}
 }
 
-void	d_line_high(t_data *data, t_point i, t_point f, float dx, float dy)
+void	d_line_high(t_data *data, t_line *line)
 {
-	int		x_dir;
-	int		y_dir;
 	int		d;
-	t_step step;
-	int color;
-	int	current;
+	t_step	step;
+	int		color;
+	int		current;
 
-	y_dir = 1;
-	if (i.py > f.py)
+	step = def_step(&line->i, &line->f, line->dy);
+	if (line->i.px > line->f.px)
+		line->x_dir = -1;
+	d = 2 * line->dx - line->dy;
+	current = 0;
+	while (line->i.py <= line->f.py)
 	{
-		swap(&i, &f);
-		dy = -dy;
-		dx = -dx;
-		y_dir = -1;
-	}
-	step = def_step(&i, &f, dy);
-	x_dir = 1;
-	if (dx < 0)
-		x_dir = -1;
-	dx *= x_dir;
-	d = 2 * dx - dy;
-	current = f.py - i.py;
-	while (i.py <= f.py)
-	{
-		color = get_color(&step, i.color, current);
-		putpix(data, i.px, i.py, color);
+		color = get_color(&step, line->i.color, current);
+		putpix(data, line->i.px, line->i.py, color);
 		if (d >= 0)
 		{
-			i.px += x_dir;
-			d += dx - dy;
+			line->i.px += line->x_dir;
+			d += line->dx - line->dy;
 		}
 		else
-			d += dx;
-		i.py++;
-		current += y_dir;
+			d += line->dx;
+		line->i.py++;
+		current++;
 	}
 }
 
 void	d_line(t_data *data, t_point i, t_point f)
 {
-	float	dx;
-	float	dy;
-
-	dx = f.px - i.px;
-	dy = f.py - i.py;
-	if (fabs(dx) >= fabs(dy))
-		d_line_low(data, i, f, dx, dy);
+	t_line	line;
+	
+	line.i = i;
+	line.f = f;
+	line.dx = fabs(line.f.px - line.i.px);
+	line.dy = fabs(line.f.py - line.i.py);
+	line.x_dir = 1;
+	line.y_dir = 1;
+	line.init_color = line.i.color;
+	if (line.dx >= line.dy)
+	{
+		if (line.i.px > line.f.px)
+		{
+			swap(&line.i, &line.f);
+		}
+		d_line_low(data, &line);
+	}
 	else
-		d_line_high(data, i, f, dx, dy);
+	{
+		if (line.i.py > line.f.py)
+		{
+			swap(&line.i, &line.f);
+		}
+		d_line_high(data, &line);
+	}
 }

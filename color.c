@@ -32,18 +32,18 @@ t_step	def_step(t_point *i, t_point *f, float size)
 {
 	t_step	step;
 	
-	if (i->color.rgb == f->color.rgb)
-	{
+	if (i->color.r == f->color.r)
 		step.r = 0;
-		step.g = 0;
-		step.b = 0;
-	}
 	else
-	{
 		step.r = (f->color.r - i->color.r) / size;
+	if (i->color.g == f->color.g)
+		step.g = 0;
+	else
 		step.g = (f->color.g - i->color.g) / size;
+	if (i->color.b == f->color.b)
+		step.b = 0;
+	else
 		step.b = (f->color.b - i->color.b) / size;
-	}
 	return (step);
 }
 
