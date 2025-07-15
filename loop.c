@@ -3,7 +3,8 @@
 void	update(t_fdf *fdf)
 {
 	calculate_delta(fdf);
-	fdf->params.zoom += fdf->params.zoom_dir * fdf->params.zoom * fdf->params.delta;
+	if (fdf->map.limits.x_max - fdf->map.limits.x_min > WIDTH / 2 || fdf->params.zoom_dir > 0)
+		fdf->params.zoom += fdf->params.zoom_dir * fdf->params.zoom * fdf->params.delta;
 	fdf->params.shx += fdf->params.x_dir * fdf->params.delta * 400 / fdf->params.zoom;
 	fdf->params.shy += fdf->params.y_dir * fdf->params.delta * 400 / fdf->params.zoom;
 	fdf->params.z_angle += fdf->params.angle_dir * fdf->params.delta * 0.8;
