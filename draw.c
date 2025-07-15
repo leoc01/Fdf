@@ -7,12 +7,12 @@ void	putpix(t_data *data, int x, int y, int color)
 	if (!(x > 0 && y > 0 && x < WIDTH && y < HEIGHT))
 		return ;
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-		*(unsigned int*)dst = color;
+	*(unsigned int *)dst = color;
 }
 
 void	swap(t_point *i, t_point *f)
 {
-	t_point aux;
+	t_point	aux;
 
 	aux.px = i->px;
 	aux.py = i->py;
@@ -24,10 +24,10 @@ void	swap(t_point *i, t_point *f)
 
 void	d_line_low(t_data *data, t_line *line)
 {
-	int	d;
-	t_step step;
-	int color;
-	int	current;
+	int		d;
+	t_step	step;
+	int		color;
+	int		current;
 
 	step = def_step(&line->i, &line->f, line->dx * line->c_dir);
 	if (line->i.py > line->f.py)
@@ -81,7 +81,7 @@ void	d_line_high(t_data *data, t_line *line)
 void	d_line(t_data *data, t_point i, t_point f)
 {
 	t_line	line;
-	
+
 	line.i = i;
 	line.f = f;
 	line.dx = fabs(line.f.px - line.i.px);
