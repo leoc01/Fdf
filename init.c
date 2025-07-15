@@ -1,4 +1,5 @@
 #include "fdf.h"
+#include <stdio.h>
 
 void	start(t_fdf *fdf, char *file)
 {
@@ -54,7 +55,7 @@ int	get_points(t_map *map, int fd)
 			free(color[0]);
 			if (color[1])
 			{
-				map->point[i + (j * map->size_x)].color = hex_to_color(color[1]);
+				map->point[i + (j * map->size_x)].color = hex_to_color(ft_strtrim(color[1], "\n"));
 				free(color[1]);
 			}
 			free(color);

@@ -25,7 +25,7 @@ t_color	hex_to_color(char *n)
 	color.rgb = 0;
 	if (n[0] != '0' || ft_toupper(n[1]) != 'X')
 		color.rgb = 0X00FFFFFF;
-	while (n[i] && n[i] != '\n')
+	while (n[i])
 	{
 		color.rgb += (ft_strchr(b, ft_toupper(n[i])) - &b[0]) * pow(16, len);
 		len--;
