@@ -18,11 +18,11 @@ void	draw(t_map *map, t_data *data)
 void	update(t_fdf *fdf)
 {
 	calculate_delta(fdf);
-	fdf->params.zoom += fdf->params.zoom_dir * 8 * fdf->params.delta;
-	fdf->params.shx += fdf->params.x_dir * sqrt(fdf->params.zoom) * 40 * fdf->params.delta;
-	fdf->params.shy += fdf->params.y_dir * sqrt(fdf->params.zoom) * 40 * fdf->params.delta;
-	fdf->params.z_angle += fdf->params.angle_dir * 0.5 * fdf->params.delta;
-	to_iso(&fdf->map, (-M_PI / 2) + fdf->params.z_angle);
+	fdf->params.zoom += fdf->params.zoom_dir * fdf->params.zoom * fdf->params.delta;
+	fdf->params.shx += fdf->params.x_dir * fdf->params.delta * 400 / fdf->params.zoom;
+	fdf->params.shy += fdf->params.y_dir * fdf->params.delta * 400 / fdf->params.zoom;
+	fdf->params.z_angle += fdf->params.angle_dir * fdf->params.delta * 0.8;
+	to_iso(&fdf->map, fdf->params.z_angle);
 	scale(&fdf->map, fdf->params.zoom);
 	set_limits(&fdf->map);
 	shift(&fdf->map, fdf->params);
@@ -36,11 +36,12 @@ void	render(t_fdf *fdf)
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, fdf->data.img, 0, 0);
 	mlx_destroy_image(fdf->mlx, fdf->data.img);
 }
+
 int	loop(t_fdf *fdf)
 {
 	update(fdf);
 	render(fdf);
-	return (1);
+	return (0);
 }
 
 int	close_fdf(t_fdf *fdf, int code)
@@ -60,56 +61,69 @@ int	close_fdf(t_fdf *fdf, int code)
 int	key_press(int keysym, t_fdf *fdf)
 {
 	if (keysym == UP)
-		fdf->params.zoom_dir = 1;
+		fdf->params.zoom_dir += 1;
 	if (keysym == DOWN)
-		fdf->params.zoom_dir = -1;
+		fdf->params.zoom_dir -= 1;
 	if (keysym == D_KEY)
-		fdf->params.x_dir = 1;
+		fdf->params.x_dir += 1;
 	if (keysym == A_KEY)
-		fdf->params.x_dir = -1;
+		fdf->params.x_dir -= 1;
 	if (keysym == S_KEY)
-		fdf->params.y_dir = 1;
+		fdf->params.y_dir += 1;
 	if (keysym == W_KEY)
-		fdf->params.y_dir = -1;
-	if (keysym == LEFT)
-		fdf->params.angle_dir = 1;
+		fdf->params.y_dir -= 1;
 	if (keysym == RIGHT)
-		fdf->params.angle_dir = -1;
+		fdf->params.angle_dir += 1;
+	if (keysym == LEFT)
+		fdf->params.angle_dir -= 1;
 	return (0);
 }
 
 int	key_release(int keysym, t_fdf *fdf)
 {
 	if (keysym == UP)
-		fdf->params.zoom_dir = 0;
+		fdf->params.zoom_dir -= 1;
 	if (keysym == DOWN)
-		fdf->params.zoom_dir = 0;
+		fdf->params.zoom_dir += 1;
 	if (keysym == ESC)
 		close_fdf(fdf, 0);
 	if (keysym == D_KEY)
-		fdf->params.x_dir = 0;
+		fdf->params.x_dir -= 1;
 	if (keysym == A_KEY)
-		fdf->params.x_dir = 0;
+		fdf->params.x_dir += 1;
 	if (keysym == S_KEY)
-		fdf->params.y_dir = 0;
+		fdf->params.y_dir -= 1;
 	if (keysym == W_KEY)
-		fdf->params.y_dir = 0;
-	if (keysym == LEFT)
-		fdf->params.angle_dir = 0;
+		fdf->params.y_dir += 1;
 	if (keysym == RIGHT)
-		fdf->params.angle_dir = 0;
+		fdf->params.angle_dir -= 1;
+	if (keysym == LEFT)
+		fdf->params.angle_dir += 1;
 	return (0);
 }
 
 void	start(t_fdf *fdf, char *file)
 {
+	int	fd;
+	
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)
 		close_fdf(fdf, 1);
 	fdf->mlx_win = mlx_new_window(fdf->mlx, WIDTH, HEIGHT, "Fdf");
 	if (!fdf->mlx_win)
 		close_fdf(fdf, 1);
-	create_map(fdf, file);
+	fd = open(file, O_RDONLY);
+	if (fd < 3)
+		close_fdf(fdf, 1);
+	if (!create_map(&fdf->map, fd))
+		close_fdf(fdf, 1);
+	fd = close(fd);
+	fd = open(file, O_RDONLY);
+	if (fd < 3)
+		close_fdf(fdf, 1);
+	if (!get_points(&fdf->map, fd))
+		close_fdf(fdf, 1);
+	fd = close(fd);
 	init_params(fdf);
 	mlx_hook(fdf->mlx_win, 17, (1L<<17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L<<0), key_press, fdf);

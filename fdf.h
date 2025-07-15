@@ -105,9 +105,9 @@ typedef	struct	s_fdf {
 
 // initial
 void	start(t_fdf *fdf, char *file);
-void	create_map(t_fdf *fdf, char *file);
+int		create_map(t_map *map, int fd);
 void	init_params(t_fdf *fdf);
-void	get_points(t_map *map, char *file, t_fdf *fdf);
+int		get_points(t_map *map, int fd);
 // color
 t_color	hex_to_color(char *n);
 int		get_color(t_step *step, t_color color, int current);
