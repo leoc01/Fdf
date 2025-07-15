@@ -52,8 +52,8 @@ typedef struct	s_line {
 	t_point	f;
 	float	dx;
 	float	dy;
-	int		x_dir;
-	int		y_dir;
+	int		s_dir;
+	int		c_dir;
 	t_color	init_color;
 }	t_line;
 
