@@ -17,7 +17,7 @@ void	update(t_fdf *fdf)
 void	render(t_fdf *fdf)
 {
 	fdf->data.img = mlx_new_image(fdf->mlx, WIDTH, HEIGHT);
-	fdf->data.addr = mlx_get_data_addr(fdf->data.img, &fdf->data.bits_per_pixel, &fdf->data.line_length, &fdf->data.endian);
+	fdf->data.addr = mlx_get_data_addr(fdf->data.img, &fdf->data.bpp, &fdf->data.line_length, &fdf->data.endian);
 	draw(&fdf->map, &fdf->data);
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, fdf->data.img, 0, 0);
 	mlx_destroy_image(fdf->mlx, fdf->data.img);

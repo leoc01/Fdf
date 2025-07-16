@@ -6,7 +6,7 @@ void	putpix(t_data *data, int x, int y, int color)
 
 	if (!(x > 0 && y > 0 && x < WIDTH && y < HEIGHT))
 		return ;
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	dst = data->addr + (y * data->line_length + x * (data->bpp / 8));
 	*(unsigned int *)dst = color;
 }
 

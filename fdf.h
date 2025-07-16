@@ -7,8 +7,8 @@
 #include <libft.h>
 #include <sys/time.h>
 
-#define WIDTH 1365
-#define HEIGHT 699
+#define WIDTH 1366
+#define HEIGHT 700
 #define PADDING 100
 
 #define ESC 65307
@@ -96,7 +96,7 @@ typedef struct s_data
 {
 	void	*img;
 	char	*addr;
-	int		bits_per_pixel;
+	int		bpp;
 	int		line_length;
 	int		endian;
 }	t_data;
