@@ -3,7 +3,7 @@ NAME = fdf
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -flto -fstrict-aliasing -ffast-math
 RM = rm -rf
-SRC = fdf.c hooks.c loop.c init.c matrix.c color.c draw.c  
+SRC = fdf.c hooks.c loop.c init.c matrix.c color.c utils.c line.c
 
 OBJ = $(SRC:.c=.o)
 

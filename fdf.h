@@ -5,21 +5,12 @@
 #include <fcntl.h>
 #include "get_next_line.h"
 #include <libft.h>
-#include <sys/time.h>
 
-#define WIDTH 1365
-#define HEIGHT 699
-#define PADDING 100
+#define WIDTH 1366
+#define HEIGHT 700
+#define PADDING 50
 
 #define ESC 65307
-#define UP 65362
-#define DOWN 65364
-#define LEFT 65361
-#define RIGHT 65363
-#define W_KEY 119
-#define A_KEY 97
-#define S_KEY 115
-#define D_KEY 100
 
 #define Z_FAC 6
 
@@ -78,26 +69,19 @@ typedef struct s_map
 
 typedef struct s_params
 {
-	float		delta;
-	long long	last_frame_time;
 	float		zoom;
-	int			zoom_dir;
 	int			cx;
 	int			cy;
 	float		shx;
 	float		shy;
-	int			x_dir;
-	int			y_dir;
-	float		z_angle;
-	int			angle_dir;
 }	t_params;
 
 typedef struct s_data
 {
 	void	*img;
 	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
+	int		bpp;
+	int		ln_len;
 	int		endian;
 }	t_data;
 
@@ -121,7 +105,7 @@ t_color	hex_to_color(char *n);
 int		to_rgb(t_color *color);
 int		rgb_from(char rgb, int color);
 t_step	def_step(t_point *i, t_point *f, float size);
-int		get_color(t_step *step, t_color color, int current);
+int		step_color(t_step *step, t_color color, int current);
 
 // matriz
 void	set_limits(t_map *map);
@@ -136,16 +120,10 @@ void	d_line_low(t_data *data, t_line *line);
 void	d_line_high(t_data *data, t_line *line);
 void	d_line(t_data *data, t_point i, t_point f);
 
-// loop
-void		update(t_fdf *fdf);
-void		render(t_fdf *fdf);
-void		draw(t_map *map, t_data *data);
-int			loop(t_fdf *fdf);
-long long	get_time(void);
-void		calculate_delta(t_fdf *fdf);
+// graphic
+void	render(t_fdf *fdf);
+void	draw(t_map *map, t_data *data);
 
 // hooks
 int		key_press(int keysyn, t_fdf *fdf);
-int		key_release(int keysyn, t_fdf *fdf);
-int		loop(t_fdf *fdf);
 int		close_fdf(t_fdf *fdf, int code);

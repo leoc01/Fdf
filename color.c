@@ -76,7 +76,7 @@ t_step	def_step(t_point *i, t_point *f, float size)
 	return (step);
 }
 
-int	get_color(t_step *step, t_color color, int current)
+int	step_color(t_step *step, t_color color, int current)
 {
 	color.r = (int)(color.r + (current * step->r)) & 0xFF;
 	color.g = (int)(color.g + (current * step->g)) & 0xFF;

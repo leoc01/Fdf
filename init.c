@@ -1,5 +1,4 @@
 #include "fdf.h"
-#include <stdio.h>
 
 void	start(t_fdf *fdf, char *file)
 {
@@ -11,62 +10,17 @@ void	start(t_fdf *fdf, char *file)
 	fdf->mlx_win = mlx_new_window(fdf->mlx, WIDTH, HEIGHT, "Fdf");
 	if (!fdf->mlx_win)
 		close_fdf(fdf, 1);
+	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
+	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	fd = open(file, O_RDONLY);
-	if (fd < 3)
-		close_fdf(fdf, 1);
-	if (!create_map(&fdf->map, fd))
+	if (fd < 3 || !create_map(&fdf->map, fd))
 		close_fdf(fdf, 1);
 	fd = close(fd);
 	fd = open(file, O_RDONLY);
-	if (fd < 3)
-		close_fdf(fdf, 1);
-	if (!get_points(&fdf->map, fd))
+	if (fd < 3 || !get_points(&fdf->map, fd))
 		close_fdf(fdf, 1);
 	fd = close(fd);
 	init_params(fdf);
-	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
-	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
-	mlx_hook(fdf->mlx_win, 03, (1L << 1), key_release, fdf);
-	mlx_loop_hook(fdf->mlx, loop, fdf);
-}
-
-int	get_points(t_map *map, int fd)
-{
-	char	*row_line;
-	char	**row;
-	int		i;
-	int		j;
-	char	**color;
-
-	row_line = get_next_line(fd);
-	j = 0;
-	while (row_line)
-	{
-		row = ft_split(row_line, ' ');
-		free(row_line);
-		i = 0;
-		while (i < map->size_x)
-		{
-			map->point[i + (j * map->size_x)].ax = i;
-			map->point[i + (j * map->size_x)].ay = j;
-			map->point[i + (j * map->size_x)].az = ft_atoi(row[i]);
-			map->point[i + (j * map->size_x)].color = hex_to_color("0xFFFFFF");
-			color = ft_split(row[i], ',');
-			free(color[0]);
-			if (color[1])
-			{
-				map->point[i + (j * map->size_x)].color = hex_to_color(ft_strtrim(color[1], "\n"));
-				free(color[1]);
-			}
-			free(color);
-			free(row[i]);
-			i++;
-		}
-		free(row);
-		j++;
-		row_line = get_next_line(fd);
-	}
-	return (1);
 }
 
 int	create_map(t_map *map, int fd)
@@ -94,16 +48,58 @@ int	create_map(t_map *map, int fd)
 	return (1);
 }
 
+t_color	set_color(char *point)
+{
+	char	**p_color;
+	char	*trim_color;
+	t_color	color;
+
+	color = hex_to_color("0xFFFFFF");
+	p_color = ft_split(point, ',');
+	free(p_color[0]);
+	if (p_color[1])
+	{
+		trim_color = ft_strtrim(p_color[1], "\n");
+		color = hex_to_color(trim_color);
+		free(trim_color);
+		free(p_color[1]);
+	}
+	free(p_color);
+	return (color);
+}
+
+int	get_points(t_map *map, int fd)
+{
+	char	*row_line;
+	char	**row;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (i + 1 < map->size_y)
+	{
+		row_line = get_next_line(fd);
+		row = ft_split(row_line, ' ');
+		free(row_line);
+		j = 0;
+		while (j < map->size_x)
+		{
+			map->point[j + (i * map->size_x)].ax = j;
+			map->point[j + (i * map->size_x)].ay = i;
+			map->point[j + (i * map->size_x)].az = ft_atoi(row[j]);
+			map->point[j + (i * map->size_x)].color = set_color(row[j]);
+			free(row[j]);
+			j++;
+		}
+		free(row);
+		i++;
+	}
+	return (1);
+}
+
 void	init_params(t_fdf *fdf)
 {
-	fdf->params.last_frame_time = get_time();
-	fdf->params.delta = 0;
-	fdf->params.zoom_dir = 0;
-	fdf->params.x_dir = 0;
-	fdf->params.y_dir = 0;
-	fdf->params.z_angle = 0;
-	fdf->params.angle_dir = 0;
-	to_iso(&fdf->map, (-M_PI / 2) * fdf->params.z_angle);
+	to_iso(&fdf->map, (-M_PI / 2));
 	set_limits(&fdf->map);
 	fdf->params.zoom = (WIDTH - PADDING * 2.0f) / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min);
 	if (WIDTH / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min) > HEIGHT / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min))
