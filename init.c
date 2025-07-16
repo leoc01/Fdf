@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/09 15:43:36 by lbuscaro          #+#    #+#             */
+/*   Updated: 2025/07/09 17:53:45 by lbuscaro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 void	start(t_fdf *fdf, char *file)
@@ -7,7 +19,7 @@ void	start(t_fdf *fdf, char *file)
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)
 		close_fdf(fdf, 1);
-	fdf->mlx_win = mlx_new_window(fdf->mlx, WIDTH, HEIGHT, "Fdf");
+	fdf->mlx_win = mlx_new_window(fdf->mlx, W, H, "Fdf");
 	if (!fdf->mlx_win)
 		close_fdf(fdf, 1);
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
@@ -99,14 +111,21 @@ int	get_points(t_map *map, int fd)
 
 void	init_params(t_fdf *fdf)
 {
-	to_iso(&fdf->map, (-M_PI / 2));
-	set_limits(&fdf->map);
-	fdf->params.zoom = (WIDTH - PADDING * 2.0f) / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min);
-	if (WIDTH / fabs(fdf->map.limits.x_max - fdf->map.limits.x_min) > HEIGHT / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min))
-		fdf->params.zoom = (HEIGHT - PADDING * 2.0f) / fabs(fdf->map.limits.y_max - fdf->map.limits.y_min);
-	fdf->params.shx = 0;
-	fdf->params.shy = 0;
-	scale(&fdf->map, fdf->params.zoom);
-	set_limits(&fdf->map);
-	shift(&fdf->map, fdf->params);
+	float		dx_rel;
+	float		dy_rel;
+	t_map		*map;
+	t_params	*params;
+
+	map = &fdf->map;
+	params = &fdf->params;
+	to_iso(map, (-M_PI / 2));
+	set_limits(map);
+	dx_rel = W / fabs(map->lim.x_max - map->lim.x_min);
+	dy_rel = H / fabs(map->lim.y_max - map->lim.y_min);
+	params->zoom = (W - P * 2.0f) / fabs(map->lim.x_max - map->lim.x_min);
+	if (dx_rel > dy_rel)
+		params->zoom = (H - P * 2.0f) / fabs(map->lim.y_max - map->lim.y_min);
+	scale(map, params->zoom);
+	set_limits(map);
+	shift(map, *params);
 }

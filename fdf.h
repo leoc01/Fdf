@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/09 15:43:36 by lbuscaro          #+#    #+#             */
+/*   Updated: 2025/07/09 17:53:45 by lbuscaro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <mlx.h>
 #include <stdlib.h>
 #include <math.h>
@@ -6,9 +18,9 @@
 #include "get_next_line.h"
 #include <libft.h>
 
-#define WIDTH 1366
-#define HEIGHT 700
-#define PADDING 50
+#define W 1366
+#define H 700
+#define P 50
 
 #define ESC 65307
 
@@ -64,7 +76,7 @@ typedef struct s_map
 	int			size_y;
 	int			area;
 	t_point		*point;
-	t_limits	limits;
+	t_limits	lim;
 }	t_map;
 
 typedef struct s_params
@@ -72,8 +84,6 @@ typedef struct s_params
 	float		zoom;
 	int			cx;
 	int			cy;
-	float		shx;
-	float		shy;
 }	t_params;
 
 typedef struct s_data
@@ -107,18 +117,20 @@ int		rgb_from(char rgb, int color);
 t_step	def_step(t_point *i, t_point *f, float size);
 int		step_color(t_step *step, t_color color, int current);
 
-// matriz
+// matrix
 void	set_limits(t_map *map);
 void	to_iso(t_map *map, float anglez);
 void	scale(t_map *map, float zoom);
 void	shift(t_map *map, t_params params);
 
-// draw
-void	putpix(t_data *data, int x, int y, int color);
-void	swap(t_point *i, t_point *f);
+// line
 void	d_line_low(t_data *data, t_line *line);
 void	d_line_high(t_data *data, t_line *line);
 void	d_line(t_data *data, t_point i, t_point f);
+
+// utils
+void	putpix(t_data *data, int x, int y, int color);
+void	swap(t_point *i, t_point *f);
 
 // graphic
 void	render(t_fdf *fdf);

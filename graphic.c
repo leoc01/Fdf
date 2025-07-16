@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.c                                              :+:      :+:    :+:   */
+/*   graphic.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,15 +10,31 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"	
+#include "fdf.h"
 
-int	main(int argc, char **argv)
+void	render(t_fdf *fdf)
 {
-	t_fdf	fdf;
+	t_data	*dt;
 
-	if (argc != 2)
-		return (1);
-	start(&fdf, argv[1]);
-	render(&fdf);
-	mlx_loop(fdf.mlx);
+	dt = &fdf->data;
+	dt->img = mlx_new_image(fdf->mlx, W, H);
+	dt->addr = mlx_get_data_addr(dt->img, &dt->bpp, &dt->ln_len, &dt->endian);
+	draw(&fdf->map, dt);
+	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, dt->img, 0, 0);
+	mlx_destroy_image(fdf->mlx, dt->img);
+}
+
+void	draw(t_map *map, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < map->area)
+	{
+		if (map->point[i].ax)
+			d_line(data, map->point[i - 1], map->point[i]);
+		if (map->point[i].ay)
+			d_line(data, map->point[i], map->point[i - map->size_x]);
+		i++;
+	}
 }
