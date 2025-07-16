@@ -26,7 +26,10 @@ void	start(t_fdf *fdf, char *file)
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	fd = open(file, O_RDONLY);
 	if (fd < 3 || !create_map(&fdf->map, fd))
+	{
+		fdf->map.point = NULL;
 		close_fdf(fdf, 1);
+	}
 	fd = close(fd);
 	fd = open(file, O_RDONLY);
 	if (fd < 3 || !get_points(&fdf->map, fd))
