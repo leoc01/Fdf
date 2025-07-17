@@ -82,6 +82,8 @@ void	d_line(t_data *data, t_point i, t_point f)
 {
 	t_line	line;
 
+	if ((i.px < 0 && f.px < 0) || (i.px > WIDTH && f.px > WIDTH) || (i.py < 0 && f.py < 0) || (i.py > HEIGHT && f.py > HEIGHT))
+		return ;
 	line.i = i;
 	line.f = f;
 	line.dx = fabs(line.f.px - line.i.px);
