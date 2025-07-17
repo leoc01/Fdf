@@ -85,7 +85,7 @@ t_color	set_color(char *point)
 
 int	get_points(t_map *map, int fd)
 {
-	char	*row_line;
+	char	*line;
 	char	**row;
 	int		i;
 	int		j;
@@ -93,9 +93,9 @@ int	get_points(t_map *map, int fd)
 	i = 0;
 	while (i + 1 < map->size_y)
 	{
-		row_line = get_next_line(fd);
-		row = ft_split(row_line, ' ');
-		free(row_line);
+		line = get_next_line(fd);
+		row = ft_split(line, ' ');
+		free(line);
 		j = 0;
 		while (j < map->size_x)
 		{
