@@ -16,10 +16,14 @@ void	update(t_fdf *fdf)
 
 void	render(t_fdf *fdf)
 {
+	char	*fps;
 	fdf->data.img = mlx_new_image(fdf->mlx, WIDTH, HEIGHT);
 	fdf->data.addr = mlx_get_data_addr(fdf->data.img, &fdf->data.bpp, &fdf->data.line_length, &fdf->data.endian);
 	draw(&fdf->map, &fdf->data);
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, fdf->data.img, 0, 0);
+	fps = ft_itoa((int)fdf->params.fps);
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 10, 10, 0xFFFFFF, fps);
+	free(fps);
 	mlx_destroy_image(fdf->mlx, fdf->data.img);
 }
 
@@ -48,9 +52,19 @@ long long	get_time(void)
 
 void	calculate_delta(t_fdf *fdf)
 {
-	long long	now;
-
+	long long		now;
+	static float	accumulator;
+	static int		fps;
+	
 	now = get_time();
 	fdf->params.delta = (now - fdf->params.last_frame_time) / 1000.0f;
 	fdf->params.last_frame_time = now;
+	accumulator += fdf->params.delta;
+	fps++;
+	if (accumulator >= 1.0f)
+	{
+		fdf->params.fps = fps;
+		fps = 0;
+		accumulator = 0;	
+	}
 }

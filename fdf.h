@@ -90,6 +90,7 @@ typedef struct s_params
 	int			y_dir;
 	float		z_angle;
 	int			angle_dir;
+	int			fps;
 }	t_params;
 
 typedef struct s_data
