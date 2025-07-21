@@ -18,8 +18,8 @@
 #include "get_next_line.h"
 #include <libft.h>
 
-#define W 1366
-#define H 700
+#define W 1920
+#define H 1000
 #define P 50
 
 #define ESC 65307

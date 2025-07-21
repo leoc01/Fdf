@@ -63,14 +63,14 @@ int	create_map(t_map *map, int fd)
 	return (1);
 }
 
-t_color	set_color(char *point)
+t_color	set_color(char **p_color)
 {
-	char	**p_color;
 	char	*trim_color;
 	t_color	color;
 
 	color = hex_to_color("0xFFFFFF");
-	p_color = ft_split(point, ',');
+	if (!p_color)
+		return (color);
 	free(p_color[0]);
 	if (p_color[1])
 	{
@@ -102,7 +102,7 @@ int	get_points(t_map *map, int fd)
 			map->point[j + (i * map->size_x)].ax = j;
 			map->point[j + (i * map->size_x)].ay = i;
 			map->point[j + (i * map->size_x)].az = ft_atoi(row[j]);
-			map->point[j + (i * map->size_x)].color = set_color(row[j]);
+			map->point[j + (i * map->size_x)].color = set_color(ft_split(row[j], ','));
 			free(row[j]);
 			j++;
 		}
