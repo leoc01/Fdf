@@ -11,10 +11,17 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include <stdio.h>
+
+#define BUFFER 3000
 
 void	start(t_fdf *fdf, char *file)
 {
-	int	fd;
+	int		fd;
+	int		br;
+	size_t	size;
+	char	fs[BUFFER];
+	char	*content;
 
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)
@@ -25,88 +32,110 @@ void	start(t_fdf *fdf, char *file)
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	fd = open(file, O_RDONLY);
-	if (fd < 3 || !create_map(&fdf->map, fd))
+	br = read(fd, &fs, BUFFER);
+	size = br;
+	while (br > 0)
+	{
+		size += br;
+		br = read(fd, fs, BUFFER);
+	}
+	fd = close(fd);
+	content = (char *)malloc(sizeof(char) * (size + 1));
+	fd = open(file, O_RDONLY);
+	read(fd, content, size);
+	fd = close(fd);
+	content[size] = '\0';
+	if (!create_map(&fdf->map, content))
 	{
 		fdf->map.point = NULL;
 		close_fdf(fdf, 1);
 	}
-	fd = close(fd);
-	fd = open(file, O_RDONLY);
-	if (fd < 3 || !get_points(&fdf->map, fd))
+	if (!get_points(&fdf->map, content))
 		close_fdf(fdf, 1);
-	fd = close(fd);
+	free(content);
 	init_params(fdf);
 }
 
-int	create_map(t_map *map, int fd)
+int	create_map(t_map *map, char *content)
 {
-	char	*row;
-	char	**column;
+	int	x;
 
 	map->point = NULL;
 	map->size_x = 0;
 	map->size_y = 0;
-	row = get_next_line(fd);
-	column = ft_split(row, ' ');
-	while (column[map->size_x])
-		free(column[map->size_x++]);
-	free(column);
-	map->size_y++;
-	while (row)
+	x = 0;
+	while (content[0])
 	{
-		free(row);
-		row = get_next_line(fd);
-		map->size_y++;
+		while (content[0] == ' ')
+			content++;
+		while (content[0] != ' ' && content[0] != '\n')
+			content++;
+		map->size_x++;
+		if (content[0] == '\n')
+		{
+			if (x == 0)
+				x = map->size_x;
+			map->size_x = 0;
+			map->size_y++;
+		}
+		content++;
 	}
+	map->size_x = x;
 	map->area = map->size_x * map->size_y;
-	map->point = ft_calloc(map->size_x * map->size_y, sizeof(t_point));
+	map->point = ft_calloc(map->area, sizeof(t_point));
 	return (1);
 }
 
-t_color	set_color(char **p_color)
+t_color	set_color(char *content)
 {
-	char	*trim_color;
+	//char	*trim_color;
+	char	str_color[9];
+	int		i;
 	t_color	color;
 
 	color = hex_to_color("0xFFFFFF");
-	if (!p_color)
+	if (content[0] != ',' || content[1] != '0' || ft_toupper(content[2]) != 'X')
 		return (color);
-	free(p_color[0]);
-	if (p_color[1])
+	content++;
+	i = 0;
+	while (i < 9)
 	{
-		trim_color = ft_strtrim(p_color[1], "\n");
-		color = hex_to_color(trim_color);
-		free(trim_color);
-		free(p_color[1]);
+		if (content[0] != ' ' && content[0] != '\n')
+		{
+			str_color[i] = content[0];
+			content++;
+		}
+		else
+			str_color[i] = '\0';
+		i++;
 	}
-	free(p_color);
+	color = hex_to_color(str_color);
 	return (color);
 }
 
-int	get_points(t_map *map, int fd)
+int	get_points(t_map *map, char *content)
 {
-	char	*line;
-	char	**row;
 	int		i;
 	int		j;
 
 	i = 0;
-	while (i + 1 < map->size_y)
+	while (i < map->size_y)
 	{
-		line = get_next_line(fd);
-		row = ft_split(line, ' ');
-		free(line);
 		j = 0;
 		while (j < map->size_x)
 		{
+			while (content[0] == ' ' || content[0] == '\n')
+				content++;
 			map->point[j + (i * map->size_x)].ax = j;
 			map->point[j + (i * map->size_x)].ay = i;
-			map->point[j + (i * map->size_x)].az = ft_atoi(row[j]);
-			map->point[j + (i * map->size_x)].color = set_color(ft_split(row[j], ','));
-			free(row[j]);
+			map->point[j + (i * map->size_x)].az = ft_atoi(content);
+			while (content[0] >= '0' && content[0] <= '9')
+				content++;
+			map->point[j + (i * map->size_x)].color = set_color(content);
+			while (content[0] != ' ' && content[0] != '\n')
+				content++;
 			j++;
 		}
-		free(row);
 		i++;
 	}
 	return (1);

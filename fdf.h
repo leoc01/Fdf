@@ -106,8 +106,8 @@ typedef struct s_fdf
 
 // initial
 void	start(t_fdf *fdf, char *file);
-int		create_map(t_map *map, int fd);
-int		get_points(t_map *map, int fd);
+int		create_map(t_map *map, char *content);
+int		get_points(t_map *map, char *content);
 void	init_params(t_fdf *fdf);
 
 // color
