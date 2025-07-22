@@ -113,7 +113,7 @@ int		get_points(t_map *map, char *content);
 void	init_params(t_fdf *fdf);
 
 // file
-char	*store_content(char *file)
+char	*store_content(char *file);
 
 // color
 t_color	hex_to_color(char *n);
@@ -129,8 +129,8 @@ void	scale(t_map *map, float zoom);
 void	shift(t_map *map, t_params params);
 
 // line
-void	d_line_low(t_data *data, t_line *line);
-void	d_line_high(t_data *data, t_line *line);
+//void	d_line_low(t_data *data, t_line *line);
+//void	d_line_high(t_data *data, t_line *line);
 void	d_line(t_data *data, t_point i, t_point f);
 
 // utils

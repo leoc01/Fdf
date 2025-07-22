@@ -71,10 +71,8 @@ t_color	set_color(char *content)
 	int		i;
 	t_color	color;
 
-	color = hex_to_color("0xFFFFFF");
-	if (content[0] != ',' || content[1] != '0' || ft_toupper(content[2]) != 'X')
-		return (color);
-	content++;
+	if (content[0] != '0' || ft_toupper(content[1]) != 'X')
+		return (hex_to_color("0XFFFFFF"));
 	i = 0;
 	while (i < 9)
 	{
@@ -108,6 +106,8 @@ int	get_points(t_map *map, char *content)
 			map->point[j + (i * map->size_x)].ay = i;
 			map->point[j + (i * map->size_x)].az = ft_atoi(content);
 			while (content[0] >= '0' && content[0] <= '9')
+				content++;
+			if (content[0] == ',')
 				content++;
 			map->point[j + (i * map->size_x)].color = set_color(content);
 			while (content[0] != ' ' && content[0] != '\n')
