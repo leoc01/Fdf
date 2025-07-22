@@ -7,8 +7,8 @@
 #include <libft.h>
 #include <sys/time.h>
 
-#define WIDTH 1366
-#define HEIGHT 700
+#define WIDTH 1920
+#define HEIGHT 1050
 #define PADDING 100
 
 #define ESC 65307

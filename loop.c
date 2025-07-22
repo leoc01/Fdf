@@ -7,7 +7,7 @@ void	update(t_fdf *fdf)
 		fdf->params.zoom += fdf->params.zoom_dir * fdf->params.zoom * fdf->params.delta;
 	fdf->params.shx += fdf->params.x_dir * fdf->params.delta * 400 / fdf->params.zoom;
 	fdf->params.shy += fdf->params.y_dir * fdf->params.delta * 400 / fdf->params.zoom;
-	fdf->params.z_angle += fdf->params.angle_dir * fdf->params.delta * 0.8;
+	fdf->params.z_angle += fdf->params.angle_dir * fdf->params.delta * 4;
 	to_iso(&fdf->map, fdf->params.z_angle);
 	scale(&fdf->map, fdf->params.zoom);
 	set_limits(&fdf->map);
