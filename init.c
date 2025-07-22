@@ -11,16 +11,9 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include <stdio.h>
-
-#define BUFFER 3000
 
 void	start(t_fdf *fdf, char *file)
 {
-	int		fd;
-	int		br;
-	size_t	size;
-	char	fs[BUFFER];
 	char	*content;
 
 	fdf->mlx = mlx_init();
@@ -31,20 +24,7 @@ void	start(t_fdf *fdf, char *file)
 		close_fdf(fdf, 1);
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
-	fd = open(file, O_RDONLY);
-	br = read(fd, &fs, BUFFER);
-	size = br;
-	while (br > 0)
-	{
-		size += br;
-		br = read(fd, fs, BUFFER);
-	}
-	fd = close(fd);
-	content = (char *)malloc(sizeof(char) * (size + 1));
-	fd = open(file, O_RDONLY);
-	read(fd, content, size);
-	fd = close(fd);
-	content[size] = '\0';
+	content = store_content(file);
 	if (!create_map(&fdf->map, content))
 	{
 		fdf->map.point = NULL;
@@ -60,7 +40,6 @@ int	create_map(t_map *map, char *content)
 {
 	int	x;
 
-	map->point = NULL;
 	map->size_x = 0;
 	map->size_y = 0;
 	x = 0;
@@ -88,7 +67,6 @@ int	create_map(t_map *map, char *content)
 
 t_color	set_color(char *content)
 {
-	//char	*trim_color;
 	char	str_color[9];
 	int		i;
 	t_color	color;

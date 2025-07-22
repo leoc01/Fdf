@@ -26,6 +26,8 @@
 
 #define Z_FAC 6
 
+#define BUFFER 50000
+
 typedef struct s_color
 {
 	int	rgb;
@@ -109,6 +111,9 @@ void	start(t_fdf *fdf, char *file);
 int		create_map(t_map *map, char *content);
 int		get_points(t_map *map, char *content);
 void	init_params(t_fdf *fdf);
+
+// file
+char	*store_content(char *file)
 
 // color
 t_color	hex_to_color(char *n);
