@@ -15,7 +15,6 @@
 #include <math.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "get_next_line.h"
 #include <libft.h>
 
 #define W 1920
@@ -106,19 +105,18 @@ typedef struct s_fdf
 	t_params	params;
 }	t_fdf;
 
-// initial
+// init
 void	start(t_fdf *fdf, char *file);
-int		create_map(t_map *map, char *content);
-int		get_points(t_map *map, char *content);
-void	init_params(t_fdf *fdf);
 
 // file
 char	*store_content(char *file);
 
 // color
-t_color	hex_to_color(char *n);
+t_color	set_color(char *content);
 int		to_rgb(t_color *color);
-int		rgb_from(char rgb, int color);
+int		from_rgb(char rgb, int color);
+
+// gradient
 t_step	def_step(t_point *i, t_point *f, float size);
 int		step_color(t_step *step, t_color color, int current);
 
@@ -129,17 +127,11 @@ void	scale(t_map *map, float zoom);
 void	shift(t_map *map, t_params params);
 
 // line
-//void	d_line_low(t_data *data, t_line *line);
-//void	d_line_high(t_data *data, t_line *line);
 void	d_line(t_data *data, t_point i, t_point f);
 
-// utils
-void	putpix(t_data *data, int x, int y, int color);
-void	swap(t_point *i, t_point *f);
-
-// graphic
+// render
 void	render(t_fdf *fdf);
-void	draw(t_map *map, t_data *data);
+void	putpix(t_data *data, int x, int y, int color);
 
 // hooks
 int		key_press(int keysyn, t_fdf *fdf);

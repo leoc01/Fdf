@@ -12,6 +12,11 @@
 
 #include "fdf.h"
 
+static int	save_point(t_map *map, char *content, int i, int j);
+static int	create_map(t_map *map, char *content);
+static int	get_points(t_map *map, char *content);
+static void	init_params(t_fdf *fdf);
+
 void	start(t_fdf *fdf, char *file)
 {
 	char	*content;
@@ -36,7 +41,7 @@ void	start(t_fdf *fdf, char *file)
 	init_params(fdf);
 }
 
-int	create_map(t_map *map, char *content)
+static int	create_map(t_map *map, char *content)
 {
 	int	x;
 
@@ -65,51 +70,7 @@ int	create_map(t_map *map, char *content)
 	return (1);
 }
 
-t_color	set_color(char *content)
-{
-	char	str_color[9];
-	int		i;
-	t_color	color;
-
-	if (content[0] != '0' || ft_toupper(content[1]) != 'X')
-		return (hex_to_color("0XFFFFFF"));
-	i = 0;
-	while (i < 9)
-	{
-		if (content[0] != ' ' && content[0] != '\n')
-		{
-			str_color[i] = content[0];
-			content++;
-		}
-		else
-			str_color[i] = '\0';
-		i++;
-	}
-	color = hex_to_color(str_color);
-	return (color);
-}
-
-int	save_point(t_map *map, char *content, int i, int j)
-{
-	int	c;
-
-	c = 0;
-	while (content[c] == ' ' || content[c] == '\n')
-		c++;
-	map->point[j + (i * map->size_x)].ax = j;
-	map->point[j + (i * map->size_x)].ay = i;
-	map->point[j + (i * map->size_x)].az = ft_atoi(&content[c]);
-	while (content[c] >= '0' && content[c] <= '9')
-		c++;
-	if (content[c] == ',')
-		c++;
-	map->point[j + (i * map->size_x)].color = set_color(&content[c]);
-	while (content[c] != ' ' && content[c] != '\n')
-		c++;
-	return (c);
-}
-
-int	get_points(t_map *map, char *content)
+static int	get_points(t_map *map, char *content)
 {
 	int		i;
 	int		j;
@@ -131,7 +92,7 @@ int	get_points(t_map *map, char *content)
 	return (1);
 }
 
-void	init_params(t_fdf *fdf)
+static void	init_params(t_fdf *fdf)
 {
 	float		dx_rel;
 	float		dy_rel;
@@ -150,4 +111,24 @@ void	init_params(t_fdf *fdf)
 	scale(map, params->zoom);
 	set_limits(map);
 	shift(map, *params);
+}
+
+static int	save_point(t_map *map, char *content, int i, int j)
+{
+	int	c;
+
+	c = 0;
+	while (content[c] == ' ' || content[c] == '\n')
+		c++;
+	map->point[j + (i * map->size_x)].ax = j;
+	map->point[j + (i * map->size_x)].ay = i;
+	map->point[j + (i * map->size_x)].az = ft_atoi(&content[c]);
+	while (content[c] >= '0' && content[c] <= '9')
+		c++;
+	if (content[c] == ',')
+		c++;
+	map->point[j + (i * map->size_x)].color = set_color(&content[c]);
+	while (content[c] != ' ' && content[c] != '\n')
+		c++;
+	return (c);
 }

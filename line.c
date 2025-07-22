@@ -15,6 +15,7 @@
 static void	init_line(t_line *line, t_point *i, t_point *f);
 static void	d_line_low(t_data *data, t_line *line);
 static void	d_line_high(t_data *data, t_line *line);
+static void	swap_points(t_point *i, t_point *f);
 
 void	d_line(t_data *data, t_point i, t_point f)
 {
@@ -40,7 +41,7 @@ static void	init_line(t_line *line, t_point *i, t_point *f)
 	{
 		if (i->px > f->px)
 		{
-			swap(&line->i, &line->f);
+			swap_points(&line->i, &line->f);
 			line->init_color = f->color;
 			line->c_dir = -1;
 		}
@@ -49,7 +50,7 @@ static void	init_line(t_line *line, t_point *i, t_point *f)
 	{
 		if (i->py > f->py)
 		{
-			swap(&line->i, &line->f);
+			swap_points(&line->i, &line->f);
 			line->init_color = f->color;
 			line->c_dir = -1;
 		}
@@ -110,4 +111,16 @@ static void	d_line_high(t_data *data, t_line *line)
 		line->i.py++;
 		current++;
 	}
+}
+
+static void	swap_points(t_point *i, t_point *f)
+{
+	t_point	aux;
+
+	aux.px = i->px;
+	aux.py = i->py;
+	i->px = f->px;
+	i->py = f->py;
+	f->px = aux.px;
+	f->py = aux.py;
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   graphic.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,6 +11,20 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+static void	draw(t_map *map, t_data *data);
+
+void	render(t_fdf *fdf)
+{
+	t_data	*dt;
+
+	dt = &fdf->data;
+	dt->img = mlx_new_image(fdf->mlx, W, H);
+	dt->addr = mlx_get_data_addr(dt->img, &dt->bpp, &dt->ln_len, &dt->endian);
+	draw(&fdf->map, dt);
+	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, dt->img, 0, 0);
+	mlx_destroy_image(fdf->mlx, dt->img);
+}
 
 void	putpix(t_data *data, int x, int y, int color)
 {
@@ -22,14 +36,17 @@ void	putpix(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	swap(t_point *i, t_point *f)
+static void	draw(t_map *map, t_data *data)
 {
-	t_point	aux;
+	int	i;
 
-	aux.px = i->px;
-	aux.py = i->py;
-	i->px = f->px;
-	i->py = f->py;
-	f->px = aux.px;
-	f->py = aux.py;
+	i = 0;
+	while (i < map->area)
+	{
+		if (map->point[i].ax)
+			d_line(data, map->point[i - 1], map->point[i]);
+		if (map->point[i].ay)
+			d_line(data, map->point[i], map->point[i - map->size_x]);
+		i++;
+	}
 }

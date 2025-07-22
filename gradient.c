@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   graphic.c                                          :+:      :+:    :+:   */
+/*   gradient.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,29 +12,29 @@
 
 #include "fdf.h"
 
-void	render(t_fdf *fdf)
+t_step	def_step(t_point *i, t_point *f, float size)
 {
-	t_data	*dt;
+	t_step	step;
 
-	dt = &fdf->data;
-	dt->img = mlx_new_image(fdf->mlx, W, H);
-	dt->addr = mlx_get_data_addr(dt->img, &dt->bpp, &dt->ln_len, &dt->endian);
-	draw(&fdf->map, dt);
-	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, dt->img, 0, 0);
-	mlx_destroy_image(fdf->mlx, dt->img);
+	if (i->color.r == f->color.r)
+		step.r = 0;
+	else
+		step.r = (f->color.r - i->color.r) / size;
+	if (i->color.g == f->color.g)
+		step.g = 0;
+	else
+		step.g = (f->color.g - i->color.g) / size;
+	if (i->color.b == f->color.b)
+		step.b = 0;
+	else
+		step.b = (f->color.b - i->color.b) / size;
+	return (step);
 }
 
-void	draw(t_map *map, t_data *data)
+int	step_color(t_step *step, t_color color, int current)
 {
-	int	i;
-
-	i = 0;
-	while (i < map->area)
-	{
-		if (map->point[i].ax)
-			d_line(data, map->point[i - 1], map->point[i]);
-		if (map->point[i].ay)
-			d_line(data, map->point[i], map->point[i - map->size_x]);
-		i++;
-	}
+	color.r = (int)(color.r + (current * step->r)) & 0xFF;
+	color.g = (int)(color.g + (current * step->g)) & 0xFF;
+	color.b = (int)(color.b + (current * step->b)) & 0xFF;
+	return (to_rgb(&color));
 }
