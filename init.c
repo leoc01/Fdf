@@ -89,29 +89,41 @@ t_color	set_color(char *content)
 	return (color);
 }
 
+int	save_point(t_map *map, char *content, int i, int j)
+{
+	int	c;
+
+	c = 0;
+	while (content[c] == ' ' || content[c] == '\n')
+		c++;
+	map->point[j + (i * map->size_x)].ax = j;
+	map->point[j + (i * map->size_x)].ay = i;
+	map->point[j + (i * map->size_x)].az = ft_atoi(&content[c]);
+	while (content[c] >= '0' && content[c] <= '9')
+		c++;
+	if (content[c] == ',')
+		c++;
+	map->point[j + (i * map->size_x)].color = set_color(&content[c]);
+	while (content[c] != ' ' && content[c] != '\n')
+		c++;
+	return (c);
+}
+
 int	get_points(t_map *map, char *content)
 {
 	int		i;
 	int		j;
+	int		c;
 
+	c = 0;
 	i = 0;
 	while (i < map->size_y)
 	{
 		j = 0;
 		while (j < map->size_x)
 		{
-			while (content[0] == ' ' || content[0] == '\n')
-				content++;
-			map->point[j + (i * map->size_x)].ax = j;
-			map->point[j + (i * map->size_x)].ay = i;
-			map->point[j + (i * map->size_x)].az = ft_atoi(content);
-			while (content[0] >= '0' && content[0] <= '9')
-				content++;
-			if (content[0] == ',')
-				content++;
-			map->point[j + (i * map->size_x)].color = set_color(content);
-			while (content[0] != ' ' && content[0] != '\n')
-				content++;
+			c = save_point(map, content, i, j);
+			content += c;
 			j++;
 		}
 		i++;

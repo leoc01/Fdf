@@ -111,5 +111,3 @@ static void	d_line_high(t_data *data, t_line *line)
 		current++;
 	}
 }
-
-
