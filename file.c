@@ -21,16 +21,20 @@ char	*store_content(char *file)
 	char	*content;
 
 	fd = open(file, O_RDONLY);
-	br = read(fd, &fs, BUFFER);
-	size = br;
+	if (fd < 3)
+		return (NULL);
+	br = 1;
+	size = 0;
 	while (br > 0)
 	{
-		size += br;
 		br = read(fd, fs, BUFFER);
+		size += br;
 	}
 	fd = close(fd);
 	content = (char *)malloc(sizeof(char) * (size + 1));
 	fd = open(file, O_RDONLY);
+	if (fd < 3)
+		return (NULL);
 	read(fd, content, size);
 	fd = close(fd);
 	content[size] = '\0';

@@ -21,6 +21,9 @@ void	start(t_fdf *fdf, char *file)
 {
 	char	*content;
 
+	fdf->mlx = NULL;
+	fdf->mlx_win = NULL;
+	fdf->map.point = NULL;
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)
 		close_fdf(fdf, 1);
@@ -29,12 +32,12 @@ void	start(t_fdf *fdf, char *file)
 		close_fdf(fdf, 1);
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
+	content = NULL;
 	content = store_content(file);
-	if (!create_map(&fdf->map, content))
-	{
-		fdf->map.point = NULL;
+	if (!content)
 		close_fdf(fdf, 1);
-	}
+	if (!create_map(&fdf->map, content))
+		close_fdf(fdf, 1);
 	if (!get_points(&fdf->map, content))
 		close_fdf(fdf, 1);
 	free(content);
