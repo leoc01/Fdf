@@ -105,11 +105,11 @@ typedef struct s_fdf
 	t_params	params;
 }	t_fdf;
 
-// init
+// main
 void	start(t_fdf *fdf, char *file);
 
-// file
-char	*store_content(char *file);
+//generate_map
+void	load_file_data(t_fdf *fdf, char *file);
 
 // color
 t_color	set_color(char *content);

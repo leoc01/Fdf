@@ -12,44 +12,65 @@
 
 #include "fdf.h"
 
-static int	save_point(t_map *map, char *content, int i, int j);
+static char	*store_content(char *file);
 static int	create_map(t_map *map, char *content);
 static int	get_points(t_map *map, char *content);
-static void	init_params(t_fdf *fdf);
+static int	save_point(t_map *map, char *content, int i, int j);
 
-void	start(t_fdf *fdf, char *file)
+void	load_file_data(t_fdf *fdf, char *file)
 {
 	char	*content;
 
-	fdf->mlx = NULL;
-	fdf->mlx_win = NULL;
-	fdf->map.point = NULL;
-	fdf->mlx = mlx_init();
-	if (!fdf->mlx)
-		close_fdf(fdf, 1);
-	fdf->mlx_win = mlx_new_window(fdf->mlx, W, H, "Fdf");
-	if (!fdf->mlx_win)
-		close_fdf(fdf, 1);
-	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
-	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	content = NULL;
 	content = store_content(file);
 	if (!content)
 		close_fdf(fdf, 1);
 	if (!create_map(&fdf->map, content))
+	{
+		free(content);
 		close_fdf(fdf, 1);
+	}
 	if (!get_points(&fdf->map, content))
+	{
+		free(content);
 		close_fdf(fdf, 1);
+	}
 	free(content);
-	init_params(fdf);
+}
+
+static char	*store_content(char *file)
+{
+	int		fd;
+	int		br;
+	size_t	size;
+	char	fs[BUFFER];
+	char	*content;
+
+	fd = open(file, O_RDONLY);
+	if (fd < 3)
+		return (NULL);
+	br = 1;
+	size = 0;
+	while (br > 0)
+	{
+		br = read(fd, fs, BUFFER);
+		size += br;
+	}
+	fd = close(fd);
+	content = (char *)malloc(sizeof(char) * (size + 1));
+	fd = open(file, O_RDONLY);
+	if (fd < 3)
+		return (NULL);
+	read(fd, content, size);
+	fd = close(fd);
+	content[size] = '\0';
+	return (content);
 }
 
 static int	create_map(t_map *map, char *content)
 {
 	int	x;
 
-	map->size_x = 0;
-	map->size_y = 0;
 	x = 0;
 	while (content[0])
 	{
@@ -62,6 +83,8 @@ static int	create_map(t_map *map, char *content)
 		{
 			if (x == 0)
 				x = map->size_x;
+			if (x != map->size_x)
+				return (0);
 			map->size_x = 0;
 			map->size_y++;
 		}
@@ -93,27 +116,6 @@ static int	get_points(t_map *map, char *content)
 		i++;
 	}
 	return (1);
-}
-
-static void	init_params(t_fdf *fdf)
-{
-	float		dx_rel;
-	float		dy_rel;
-	t_map		*map;
-	t_params	*params;
-
-	map = &fdf->map;
-	params = &fdf->params;
-	to_iso(map, (-M_PI / 2));
-	set_limits(map);
-	dx_rel = W / fabs(map->lim.x_max - map->lim.x_min);
-	dy_rel = H / fabs(map->lim.y_max - map->lim.y_min);
-	params->zoom = (W - P * 2.0f) / fabs(map->lim.x_max - map->lim.x_min);
-	if (dx_rel > dy_rel)
-		params->zoom = (H - P * 2.0f) / fabs(map->lim.y_max - map->lim.y_min);
-	scale(map, params->zoom);
-	set_limits(map);
-	shift(map, *params);
 }
 
 static int	save_point(t_map *map, char *content, int i, int j)
