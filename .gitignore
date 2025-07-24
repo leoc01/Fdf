@@ -1,2 +1,4 @@
 .*.swp
+*.o
+fdf
 test_maps
