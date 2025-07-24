@@ -12,13 +12,14 @@
 
 #include <mlx.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <libft.h>
 
-#define W 1920
-#define H 1000
+#define W 1366
+#define H 700
 #define P 50
 
 #define ESC 65307
@@ -100,6 +101,7 @@ typedef struct s_fdf
 {
 	void		*mlx;
 	void		*mlx_win;
+	char		*file_content;
 	t_data		data;
 	t_map		map;
 	t_params	params;
@@ -135,4 +137,4 @@ void	putpix(t_data *data, int x, int y, int color);
 
 // hooks
 int		key_press(int keysyn, t_fdf *fdf);
-int		close_fdf(t_fdf *fdf, int code);
+int		close_fdf(t_fdf *fdf, char *msg);

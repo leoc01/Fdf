@@ -22,7 +22,7 @@ OBJ = $(SRC:.c=.o)
 all: mlx libft/libft.a $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) get_next_line.c get_next_line_utils.c -Llibft -lft -Lminilibx-linux -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -O3 -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -Llibft -lft -Lminilibx-linux -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -O3 -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -I/usr/include -Iminilibx-linux -Ilibft -O3 -c $< -o $@

@@ -20,7 +20,10 @@ int	main(int argc, char **argv)
 	t_fdf	fdf;
 
 	if (argc != 2)
+	{
+		ft_putstr_fd("Invalid number of arguments: Use 1\n", 2);
 		return (1);
+	}
 	initialize_fdf(&fdf);
 	load_file_data(&fdf, argv[1]);
 	set_parameters(&fdf);
@@ -33,12 +36,13 @@ static void	initialize_fdf(t_fdf *fdf)
 	fdf->mlx = NULL;
 	fdf->mlx_win = NULL;
 	fdf->map.point = NULL;
+	fdf->file_content = NULL;
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)
-		close_fdf(fdf, 1);
+		close_fdf(fdf, "Fail to init MLX");
 	fdf->mlx_win = mlx_new_window(fdf->mlx, W, H, "Fdf");
 	if (!fdf->mlx_win)
-		close_fdf(fdf, 1);
+		close_fdf(fdf, "Fail to create window");
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	fdf->map.size_x = 0;

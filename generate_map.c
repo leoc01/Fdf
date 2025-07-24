@@ -13,44 +13,41 @@
 #include "fdf.h"
 
 static char	*store_content(char *file);
-static int	create_map(t_map *map, char *content);
-static int	get_points(t_map *map, char *content);
-static int	save_point(t_map *map, char *content, int i, int j);
+static int	create_map(t_map *map, char *map_file);
+static int	get_points(t_map *map, char *map_file);
+static int	save_point(t_map *map, char *map_file, int i, int j);
 
 void	load_file_data(t_fdf *fdf, char *file)
 {
-	char	*content;
-
-	content = NULL;
-	content = store_content(file);
-	if (!content)
-		close_fdf(fdf, 1);
-	if (!create_map(&fdf->map, content))
+	fdf->file_content = store_content(file);
+	if (!fdf->file_content)
+		close_fdf(fdf, "Invalid file");
+	if (!create_map(&fdf->map, fdf->file_content))
 	{
-		free(content);
-		close_fdf(fdf, 1);
+		free(fdf->file_content);
+		close_fdf(fdf, "Fail to generate map");
 	}
-	if (!get_points(&fdf->map, content))
+	if (!get_points(&fdf->map, fdf->file_content))
 	{
-		free(content);
-		close_fdf(fdf, 1);
+		free(fdf->file_content);
+		close_fdf(fdf, "Fail to save the point");
 	}
-	free(content);
+	free(fdf->file_content);
 }
 
 static char	*store_content(char *file)
 {
 	int		fd;
 	int		br;
-	size_t	size;
+	ssize_t	size;
 	char	fs[BUFFER];
 	char	*content;
 
 	fd = open(file, O_RDONLY);
-	if (fd < 3)
+	size = read(fd, fs, 1);
+	if (fd < 0 || size != 1)
 		return (NULL);
 	br = 1;
-	size = 0;
 	while (br > 0)
 	{
 		br = read(fd, fs, BUFFER);
@@ -59,9 +56,8 @@ static char	*store_content(char *file)
 	fd = close(fd);
 	content = (char *)malloc(sizeof(char) * (size + 1));
 	fd = open(file, O_RDONLY);
-	if (fd < 3)
-		return (NULL);
-	read(fd, content, size);
+	if (fd < 3 || read(fd, content, size) < size)
+		return (free(content), NULL);
 	fd = close(fd);
 	content[size] = '\0';
 	return (content);
