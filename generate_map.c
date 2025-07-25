@@ -14,25 +14,22 @@
 
 static char	*store_content(char *file);
 static int	create_map(t_map *map, char *map_file);
-static int	get_points(t_map *map, char *map_file);
+static void	get_points(t_map *map, char *map_file);
 static int	save_point(t_map *map, char *map_file, int i, int j);
 
 void	load_file_data(t_fdf *fdf, char *file)
 {
 	fdf->file_content = store_content(file);
 	if (!fdf->file_content)
-		close_fdf(fdf, "Invalid file");
+		close_fdf(fdf, file, ": Invalid file");
 	if (!create_map(&fdf->map, fdf->file_content))
 	{
 		free(fdf->file_content);
-		close_fdf(fdf, "Fail to generate map");
+		close_fdf(fdf, file, ": Malformed map data");
 	}
-	if (!get_points(&fdf->map, fdf->file_content))
-	{
-		free(fdf->file_content);
-		close_fdf(fdf, "Fail to save the point");
-	}
+	get_points(&fdf->map, fdf->file_content);
 	free(fdf->file_content);
+	fdf->file_content = NULL;
 }
 
 static char	*store_content(char *file)
@@ -54,9 +51,9 @@ static char	*store_content(char *file)
 		size += br;
 	}
 	fd = close(fd);
-	content = (char *)malloc(sizeof(char) * (size + 1));
+	content = ft_calloc(sizeof(char), (size + 1));
 	fd = open(file, O_RDONLY);
-	if (fd < 3 || read(fd, content, size) < size)
+	if (fd < 0 || read(fd, content, size) < size)
 		return (free(content), NULL);
 	fd = close(fd);
 	content[size] = '\0';
@@ -92,7 +89,7 @@ static int	create_map(t_map *map, char *content)
 	return (1);
 }
 
-static int	get_points(t_map *map, char *content)
+static void	get_points(t_map *map, char *content)
 {
 	int		i;
 	int		j;
@@ -111,7 +108,6 @@ static int	get_points(t_map *map, char *content)
 		}
 		i++;
 	}
-	return (1);
 }
 
 static int	save_point(t_map *map, char *content, int i, int j)

@@ -39,10 +39,10 @@ static void	initialize_fdf(t_fdf *fdf)
 	fdf->file_content = NULL;
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)
-		close_fdf(fdf, "Fail to init MLX");
+		close_fdf(fdf, NULL, "Fail to init MLX");
 	fdf->mlx_win = mlx_new_window(fdf->mlx, W, H, "Fdf");
 	if (!fdf->mlx_win)
-		close_fdf(fdf, "Fail to create window");
+		close_fdf(fdf, NULL, "Fail to create window");
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	fdf->map.size_x = 0;

@@ -18,8 +18,8 @@
 #include <fcntl.h>
 #include <libft.h>
 
-#define W 1366
-#define H 700
+#define W 1920
+#define H 1000
 #define P 50
 
 #define ESC 65307
@@ -137,4 +137,4 @@ void	putpix(t_data *data, int x, int y, int color);
 
 // hooks
 int		key_press(int keysyn, t_fdf *fdf);
-int		close_fdf(t_fdf *fdf, char *msg);
+int		close_fdf(t_fdf *fdf, char *msg, char *err);

@@ -13,7 +13,7 @@
 NAME = fdf
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -flto -fstrict-aliasing -ffast-math
+CFLAGS = -Wall -Werror -Wextra -flto -fstrict-aliasing -ffast-math -O3
 RM = rm -rf
 SRC = fdf.c hooks.c gradient.c generate_map.c matrix.c color.c line.c render.c
 
@@ -22,10 +22,10 @@ OBJ = $(SRC:.c=.o)
 all: mlx libft/libft.a $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -Llibft -lft -Lminilibx-linux -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -O3 -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -Llibft -lft -Lminilibx-linux -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -I/usr/include -Iminilibx-linux -Ilibft -O3 -c $< -o $@
+	$(CC) $(CFLAGS) -I/usr/include -Iminilibx-linux -Ilibft -c $< -o $@
 
 mlx:
 	if [ ! -d "minilibx-linux" ]; then git clone https://github.com/42paris/minilibx-linux.git; fi

@@ -15,14 +15,16 @@
 int	key_press(int keysym, t_fdf *fdf)
 {
 	if (keysym == ESC)
-		close_fdf(fdf, NULL);
+		close_fdf(fdf, NULL, NULL);
 	return (0);
 }
 
-int	close_fdf(t_fdf *fdf, char *msg)
+int	close_fdf(t_fdf *fdf, char *msg, char *err)
 {
 	if (msg)
-		perror(msg);
+		ft_putstr_fd(msg, 2);
+	if (err)
+		perror(err);
 	if (fdf->map.point)
 		free(fdf->map.point);
 	if (fdf->mlx_win)
