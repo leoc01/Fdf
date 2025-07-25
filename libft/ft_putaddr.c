@@ -21,7 +21,7 @@ size_t	ft_putaddr(unsigned long int n)
 		return (ft_putstr_fd("(nil)", 1));
 	if (n >= 16)
 		i += ft_putaddr(n / 16);
-	else 
+	else
 		i += ft_putstr_fd("0x", 1);
 	if ((n % 16) < 10)
 		i += ft_putchar_fd(n % 16 + '0', 1);

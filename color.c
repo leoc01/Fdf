@@ -12,7 +12,33 @@
 
 #include "fdf.h"
 
-t_color	hex_to_color(char *n)
+static t_color	hex_to_color(char *n);
+
+t_color	set_color(char *content)
+{
+	char	str_color[9];
+	int		i;
+	t_color	color;
+
+	if (content[0] != '0' || ft_toupper(content[1]) != 'X')
+		return (hex_to_color("0XFFFFFF"));
+	i = 0;
+	while (i < 9)
+	{
+		if (content[0] != ' ' && content[0] != '\n')
+		{
+			str_color[i] = content[0];
+			content++;
+		}
+		else
+			str_color[i] = '\0';
+		i++;
+	}
+	color = hex_to_color(str_color);
+	return (color);
+}
+
+static t_color	hex_to_color(char *n)
 {
 	char	b[17];
 	int		len;
@@ -35,9 +61,9 @@ t_color	hex_to_color(char *n)
 		color.rgb = (color.rgb >> 16) & 0XFF;
 	if (len == 4)
 		color.rgb = (color.rgb >> 8) & 0XFFFF;
-	color.r = rgb_from('r', color.rgb);
-	color.g = rgb_from('g', color.rgb);
-	color.b = rgb_from('b', color.rgb);
+	color.r = from_rgb('r', color.rgb);
+	color.g = from_rgb('g', color.rgb);
+	color.b = from_rgb('b', color.rgb);
 	return (color);
 }
 
@@ -46,7 +72,7 @@ int	to_rgb(t_color *color)
 	return ((color->r << 16) | (color->g << 8) | (color->b));
 }
 
-int	rgb_from(char rgb, int color)
+int	from_rgb(char rgb, int color)
 {
 	if (rgb == 'r')
 		return ((color >> 16) & 0xFF);
@@ -55,31 +81,4 @@ int	rgb_from(char rgb, int color)
 	if (rgb == 'b')
 		return ((color) & 0xFF);
 	return (0xFF);
-}
-
-t_step	def_step(t_point *i, t_point *f, float size)
-{
-	t_step	step;
-
-	if (i->color.r == f->color.r)
-		step.r = 0;
-	else
-		step.r = (f->color.r - i->color.r) / size;
-	if (i->color.g == f->color.g)
-		step.g = 0;
-	else
-		step.g = (f->color.g - i->color.g) / size;
-	if (i->color.b == f->color.b)
-		step.b = 0;
-	else
-		step.b = (f->color.b - i->color.b) / size;
-	return (step);
-}
-
-int	get_color(t_step *step, t_color color, int current)
-{
-	color.r = (int)(color.r + (current * step->r)) & 0xFF;
-	color.g = (int)(color.g + (current * step->g)) & 0xFF;
-	color.b = (int)(color.b + (current * step->b)) & 0xFF;
-	return (to_rgb(&color));
 }

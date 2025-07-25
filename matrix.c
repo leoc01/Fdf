@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   matrix.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/25 18:45:35 by lbuscaro          #+#    #+#             */
+/*   Updated: 2025/07/25 18:45:37 by lbuscaro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 void	set_limits(t_map *map)
@@ -5,20 +17,20 @@ void	set_limits(t_map *map)
 	int	i;
 
 	i = 0;
-	map->limits.x_max = 0;
-	map->limits.x_min = 0;
-	map->limits.y_max = 0;
-	map->limits.y_min = 0;
+	map->lim.x_max = 0;
+	map->lim.x_min = 0;
+	map->lim.y_max = 0;
+	map->lim.y_min = 0;
 	while (i < map->area)
 	{
-		if (map->point[i].px > map->limits.x_max)
-			map->limits.x_max = map->point[i].px;
-		if (map->point[i].px < map->limits.x_min)
-			map->limits.x_min = map->point[i].px;
-		if (map->point[i].py > map->limits.y_max)
-			map->limits.y_max = map->point[i].py;
-		if (map->point[i].py < map->limits.y_min)
-			map->limits.y_min = map->point[i].py;
+		if (map->point[i].px > map->lim.x_max)
+			map->lim.x_max = map->point[i].px;
+		if (map->point[i].px < map->lim.x_min)
+			map->lim.x_min = map->point[i].px;
+		if (map->point[i].py > map->lim.y_max)
+			map->lim.y_max = map->point[i].py;
+		if (map->point[i].py < map->lim.y_min)
+			map->lim.y_min = map->point[i].py;
 		i++;
 	}
 }
@@ -57,17 +69,17 @@ void	scale(t_map *map, float zoom)
 	}
 }
 
-void	shift(t_map *map, t_params params)
+void	shift(t_map *map, t_params p)
 {
 	int	i;
 
-	params.cx = (map->limits.x_min + (map->limits.x_max - map->limits.x_min) / 2) - WIDTH / 2;
-	params.cy = (map->limits.y_min + (map->limits.y_max - map->limits.y_min) / 2) - HEIGHT / 2;
+	p.cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - W / 2;
+	p.cy = (map->lim.y_min + (map->lim.y_max - map->lim.y_min) / 2) - H / 2;
 	i = 0;
 	while (i < map->area)
 	{
-		map->point[i].px = map->point[i].px - params.cx + params.shx * params.zoom;
-		map->point[i].py = map->point[i].py - params.cy + params.shy * params.zoom;
+		map->point[i].px = map->point[i].px - p.cx + p.shx * p.zoom;
+		map->point[i].py = map->point[i].py - p.cy + p.shy * p.zoom;
 		i++;
 	}
 }

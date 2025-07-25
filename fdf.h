@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/25 18:45:48 by lbuscaro          #+#    #+#             */
+/*   Updated: 2025/07/25 18:46:05 by lbuscaro         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <mlx.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "get_next_line.h"
 #include <libft.h>
 #include <sys/time.h>
 
-#define WIDTH 1920
-#define HEIGHT 1050
-#define PADDING 100
+#define W 1920
+#define H 1050
+#define P 100
 
 #define ESC 65307
 #define UP 65362
@@ -22,6 +34,8 @@
 #define D_KEY 100
 
 #define Z_FAC 6
+
+#define BUFFER 50000
 
 typedef struct s_color
 {
@@ -73,17 +87,17 @@ typedef struct s_map
 	int			size_y;
 	int			area;
 	t_point		*point;
-	t_limits	limits;
+	t_limits	lim;
 }	t_map;
 
 typedef struct s_params
 {
-	float		delta;
-	long long	last_frame_time;
 	float		zoom;
-	int			zoom_dir;
 	int			cx;
 	int			cy;
+	float		delta;
+	long long	last_frame_time;
+	int			zoom_dir;
 	float		shx;
 	float		shy;
 	int			x_dir;
@@ -98,7 +112,7 @@ typedef struct s_data
 	void	*img;
 	char	*addr;
 	int		bpp;
-	int		line_length;
+	int		ln_len;
 	int		endian;
 }	t_data;
 
@@ -106,47 +120,45 @@ typedef struct s_fdf
 {
 	void		*mlx;
 	void		*mlx_win;
+	char		*file_content;
 	t_data		data;
 	t_map		map;
 	t_params	params;
 }	t_fdf;
 
-// initial
-void	start(t_fdf *fdf, char *file);
-int		create_map(t_map *map, int fd);
-int		get_points(t_map *map, int fd);
-void	init_params(t_fdf *fdf);
+// main
+void		start(t_fdf *fdf, char *file);
+
+//generate_map
+void		load_file_data(t_fdf *fdf, char *file);
 
 // color
-t_color	hex_to_color(char *n);
-int		to_rgb(t_color *color);
-int		rgb_from(char rgb, int color);
-t_step	def_step(t_point *i, t_point *f, float size);
-int		get_color(t_step *step, t_color color, int current);
+int			to_rgb(t_color *color);
+int			from_rgb(char rgb, int color);
+int			step_color(t_step *step, t_color color, int current);
+t_step		def_step(t_point *i, t_point *f, float size);
+t_color		set_color(char *content);
 
-// matriz
-void	set_limits(t_map *map);
-void	to_iso(t_map *map, float anglez);
-void	scale(t_map *map, float zoom);
-void	shift(t_map *map, t_params params);
+// matrix
+void		set_limits(t_map *map);
+void		to_iso(t_map *map, float anglez);
+void		scale(t_map *map, float zoom);
+void		shift(t_map *map, t_params params);
 
-// draw
-void	putpix(t_data *data, int x, int y, int color);
-void	swap(t_point *i, t_point *f);
-void	d_line_low(t_data *data, t_line *line);
-void	d_line_high(t_data *data, t_line *line);
-void	d_line(t_data *data, t_point i, t_point f);
+// render
+void		putpix(t_data *data, int x, int y, int color);
+void		render(t_fdf *fdf);
+void		draw(t_map *map, t_data *data);
+//line
+void		d_line(t_data *data, t_point i, t_point f);
 
 // loop
 void		update(t_fdf *fdf);
-void		render(t_fdf *fdf);
-void		draw(t_map *map, t_data *data);
 int			loop(t_fdf *fdf);
 long long	get_time(void);
 void		calculate_delta(t_fdf *fdf);
 
 // hooks
-int		key_press(int keysyn, t_fdf *fdf);
-int		key_release(int keysyn, t_fdf *fdf);
-int		loop(t_fdf *fdf);
-int		close_fdf(t_fdf *fdf, int code);
+int			key_press(int keysym, t_fdf *fdf);
+int			key_release(int keysym, t_fdf *fdf);
+int			close_fdf(t_fdf *fdf, char *msg, char *err);
