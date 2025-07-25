@@ -21,6 +21,11 @@ void	d_line(t_data *data, t_point i, t_point f)
 {
 	t_line	line;
 
+	if ((i.px < 0 && f.px < 0) ||
+			(i.py < 0 && f.py < 0) ||
+			(i.px > W && f.px > W) ||
+			(i.py > H && f.py > H))
+		return ;
 	init_line(&line, &i, &f);
 	if (line.dx >= line.dy)
 		d_line_low(data, &line);

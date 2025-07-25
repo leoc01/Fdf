@@ -15,14 +15,18 @@
 void	update(t_fdf *fdf)
 {
 	t_params	*p;
+	float	dx;
+	float	dy;
 
+	dx = fdf->map.lim.x_max - fdf->map.lim.x_min;
+	dy = fdf->map.lim.y_max - fdf->map.lim.y_min;
 	p = &fdf->params;
 	calculate_delta(fdf);
-	if (fdf->map.lim.x_max - fdf->map.lim.x_min > W / H || p->zoom_dir > 0)
+	if (p->zoom >= p->z || p->zoom_dir > 0)
 		p->zoom += p->zoom_dir * p->zoom * p->delta;
-	p->shx += p->x_dir * p->delta * 400 / p->zoom;
-	p->shy += p->y_dir * p->delta * 400 / p->zoom;
-	p->z_angle += p->angle_dir * p->delta * 0.7;
+	p->cx += p->x_dir * p->delta * 400 / p->zoom;
+	p->cy += p->y_dir * p->delta * 400 / p->zoom;
+	p->z_angle += p->angle_dir * p->delta * 0.8;
 	to_iso(&fdf->map, p->z_angle);
 	scale(&fdf->map, p->zoom);
 	set_limits(&fdf->map);

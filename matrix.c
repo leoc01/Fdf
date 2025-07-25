@@ -35,6 +35,18 @@ void	set_limits(t_map *map)
 	}
 }
 
+void  projection_matrix(float ax, float ay, float az, float *px, float *py)
+{
+    float matrix[3][3] = {
+    {1, 0, 0},
+    {0, 1, 0},
+    {0, 0, 1}
+	};
+    
+	*px = matrix[0][0] * ax + matrix[0][1] * ay + matrix[0][2] * az;
+    *py = matrix[1][0] * ax + matrix[1][1] * ay + matrix[1][2] * az;
+}
+
 void	to_iso(t_map *map, float z_angle)
 {
 	int		i;
@@ -49,9 +61,10 @@ void	to_iso(t_map *map, float z_angle)
 	while (i < map->area)
 	{
 		rotated_x = map->point[i].ax * cos_a - map->point[i].ay * sin_a;
-		rotated_y = map->point[i].ax * sin_a + map->point[i].ay * cos_a;
+		rotated_y = (map->point[i].ax * sin_a + map->point[i].ay * cos_a;
 		map->point[i].px = (rotated_x - rotated_y) * 2;
 		map->point[i].py = (rotated_x + rotated_y) - map->point[i].az / Z_FAC;
+		projection_matrix(rotated_x, (-map->point[i].az / Z_FAC), rotated_y, &map->point[i].px, &map->point[i].py);
 		i++;
 	}
 }
