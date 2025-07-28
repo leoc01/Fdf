@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   line.c                                            :+:      :+:    :+:   */
+/*   line.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:43:36 by lbuscaro          #+#    #+#             */
-/*   Updated: 2025/07/09 17:53:45 by lbuscaro         ###   ########.fr       */
+/*   Updated: 2025/07/28 11:22:07 by lbuscaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	d_line(t_data *data, t_point i, t_point f)
 {
 	t_line	line;
 
+	if ((i.px < 0 && f.px < 0) || (i.px > W && f.px > W) || (i.py < 0 && f.py < 0) || (i.py > H && f.py > H))
+		return ;
 	init_line(&line, &i, &f);
 	if (line.dx >= line.dy)
 		d_line_low(data, &line);
