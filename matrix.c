@@ -61,7 +61,7 @@ void	to_iso(t_map *map, float z_angle)
 	while (i < map->area)
 	{
 		rotated_x = map->point[i].ax * cos_a - map->point[i].ay * sin_a;
-		rotated_y = (map->point[i].ax * sin_a + map->point[i].ay * cos_a;
+		rotated_y = map->point[i].ax * sin_a + map->point[i].ay * cos_a;
 		map->point[i].px = (rotated_x - rotated_y) * 2;
 		map->point[i].py = (rotated_x + rotated_y) - map->point[i].az / Z_FAC;
 		projection_matrix(rotated_x, (-map->point[i].az / Z_FAC), rotated_y, &map->point[i].px, &map->point[i].py);
