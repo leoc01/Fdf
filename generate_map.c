@@ -65,14 +65,14 @@ static int	create_map(t_map *map, char *content)
 	int	x;
 
 	x = 0;
-	while (content[0])
+	while (*content)
 	{
-		while (content[0] == ' ')
+		while (*content && *content == ' ')
 			content++;
-		while (content[0] != ' ' && content[0] != '\n')
+		while (*content && *content != ' ' && *content != '\n')
 			content++;
 		map->size_x++;
-		if (content[0] == '\n')
+		if (*content == '\n')
 		{
 			if (x == 0)
 				x = map->size_x;

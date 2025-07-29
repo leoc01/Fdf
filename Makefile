@@ -13,7 +13,7 @@
 NAME = fdf
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -flto -fstrict-aliasing -ffast-math -O3
+CFLAGS = -g -Wall -Werror -Wextra
 RM = rm -rf
 SRC = fdf.c hooks.c gradient.c generate_map.c matrix.c color.c line.c render.c
 

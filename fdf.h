@@ -24,7 +24,7 @@
 
 #define ESC 65307
 
-#define Z_FAC 6
+#define Z_FAC 1
 
 #define BUFFER 50000
 
