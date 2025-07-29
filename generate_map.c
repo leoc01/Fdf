@@ -71,6 +71,8 @@ static int	create_map(t_map *map, char *content)
 			content++;
 		while (*content && *content != ' ' && *content != '\n')
 			content++;
+		while (*content && *content == ' ')
+			content++;
 		map->size_x++;
 		if (*content == '\n')
 		{
@@ -115,17 +117,17 @@ static int	save_point(t_map *map, char *content, int i, int j)
 	int	c;
 
 	c = 0;
-	while (content[c] == ' ' || content[c] == '\n')
+	while (content[c] && (content[c] == ' ' || content[c] == '\n'))
 		c++;
 	map->point[j + (i * map->size_x)].ax = j;
 	map->point[j + (i * map->size_x)].ay = i;
 	map->point[j + (i * map->size_x)].az = ft_atoi(&content[c]);
-	while (content[c] >= '0' && content[c] <= '9')
+	while (content[c] && content[c] >= '0' && content[c] <= '9')
 		c++;
 	if (content[c] == ',')
 		c++;
 	map->point[j + (i * map->size_x)].color = set_color(&content[c]);
-	while (content[c] != ' ' && content[c] != '\n')
+	while (content[c] && content[c] != ' ' && content[c] != '\n')
 		c++;
 	return (c);
 }
