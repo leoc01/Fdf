@@ -78,6 +78,8 @@ int	close_fdf(t_fdf *fdf, char *msg, char *err)
 		mlx_destroy_display(fdf->mlx);
 		free(fdf->mlx);
 	}
+	if (fdf)
+		free(fdf);
 	if (msg)
 		exit (1);
 	exit (0);
