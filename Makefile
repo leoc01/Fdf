@@ -1,7 +1,7 @@
 NAME = fdf
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -flto -fstrict-aliasing -ffast-math -O3
+CFLAGS = -g -Wall -Werror -Wextra -flto -fstrict-aliasing -ffast-math -O3
 RM = rm -rf
 SRC = fdf.c color.c generate_map.c gradient.c hooks.c line.c loop.c matrix.c render.c 
 

@@ -6,7 +6,7 @@
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:43:36 by lbuscaro          #+#    #+#             */
-/*   Updated: 2025/07/28 11:19:19 by lbuscaro         ###   ########.fr       */
+/*   Updated: 2025/07/28 12:07:54 by lbuscaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	draw(t_map *map, t_data *data)
 {
 	int	i;
 
-	i = 0;
+	i = 1;
 	while (i < map->area)
 	{
 		if (map->point[i].ax)

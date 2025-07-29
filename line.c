@@ -6,7 +6,7 @@
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:43:36 by lbuscaro          #+#    #+#             */
-/*   Updated: 2025/07/28 11:22:07 by lbuscaro         ###   ########.fr       */
+/*   Updated: 2025/07/28 12:08:04 by lbuscaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,14 @@ void	d_line(t_data *data, t_point i, t_point f)
 {
 	t_line	line;
 
+	line.i = i;
+	line.f = f;
+	line.dx = fabs(f.px - i.px);
+	line.dy = fabs(f.py - i.py);
+	line.s_dir = 1;
+	line.c_dir = 1;
+	line.init_color = i.color;
+//	printf("i.px=%f, f.px=%f, i.py=%f, f.py=%f\n", i.px, f.px, i.py, f.py);
 	if ((i.px < 0 && f.px < 0) || (i.px > W && f.px > W) || (i.py < 0 && f.py < 0) || (i.py > H && f.py > H))
 		return ;
 	init_line(&line, &i, &f);
@@ -32,13 +40,6 @@ void	d_line(t_data *data, t_point i, t_point f)
 
 static void	init_line(t_line *line, t_point *i, t_point *f)
 {
-	line->i = *i;
-	line->f = *f;
-	line->dx = fabs(f->px - i->px);
-	line->dy = fabs(f->py - i->py);
-	line->s_dir = 1;
-	line->c_dir = 1;
-	line->init_color = i->color;
 	if (line->dx >= line->dy)
 	{
 		if (i->px > f->px)
