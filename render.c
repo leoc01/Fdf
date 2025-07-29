@@ -15,12 +15,16 @@
 void	render(t_fdf *fdf)
 {
 	t_data	*dt;
+	char	*fps;
 
 	dt = &fdf->data;
 	dt->img = mlx_new_image(fdf->mlx, W, H);
 	dt->addr = mlx_get_data_addr(dt->img, &dt->bpp, &dt->ln_len, &dt->endian);
 	draw(&fdf->map, dt);
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, dt->img, 0, 0);
+	fps = ft_itoa(fdf->params.fps);
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 20, 0x00FFFFFF, fps);
+	free(fps);
 	mlx_destroy_image(fdf->mlx, dt->img);
 }
 

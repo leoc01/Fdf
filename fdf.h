@@ -93,6 +93,7 @@ typedef struct s_map
 typedef struct s_params
 {
 	float		zoom;
+	float		zoom_min;
 	int			cx;
 	int			cy;
 	float		delta;

@@ -72,6 +72,7 @@ static void	set_parameters(t_fdf *fdf)
 	params->zoom = (W - P * 2.0f) / fabs(map->lim.x_max - map->lim.x_min);
 	if (dx_rel > dy_rel)
 		params->zoom = (H - P * 2.0f) / fabs(map->lim.y_max - map->lim.y_min);
+	params->zoom_min = params->zoom / 2;
 	scale(map, params->zoom);
 	set_limits(map);
 	params->cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - W / 2;

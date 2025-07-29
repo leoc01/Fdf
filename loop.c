@@ -18,7 +18,7 @@ void	update(t_fdf *fdf)
 
 	p = &fdf->params;
 	calculate_delta(fdf);
-	if (fdf->map.lim.x_max - fdf->map.lim.x_min > W / H || p->zoom_dir > 0)
+	if (p->zoom > p->zoom_min || p->zoom_dir > 0)
 		p->zoom += p->zoom_dir * p->zoom * p->delta;
 	p->shx += p->x_dir * p->delta * 400 / p->zoom;
 	p->shy += p->y_dir * p->delta * 400 / p->zoom;
