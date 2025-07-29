@@ -12,7 +12,7 @@
 
 #include "fdf.h"	
 
-static t_fdf	*initialize_fdf();
+static t_fdf	*initialize_fdf(void);
 static void		set_parameters(t_fdf *fdf);
 
 int	main(int argc, char **argv)
@@ -37,6 +37,8 @@ static t_fdf	*initialize_fdf(void)
 	t_fdf	*fdf;
 
 	fdf = ft_calloc(1, sizeof (t_fdf));
+	if (!fdf)
+		close_fdf(fdf, NULL, "Fail to init FDF");
 	fdf->mlx = NULL;
 	fdf->mlx_win = NULL;
 	fdf->map.point = NULL;
@@ -50,14 +52,6 @@ static t_fdf	*initialize_fdf(void)
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	mlx_hook(fdf->mlx_win, 03, (1L << 1), key_release, fdf);
-	fdf->map.size_x = 0;
-	fdf->map.size_y = 0;
-	fdf->map.area = 0;
-	fdf->map.lim.x_max = 0;
-	fdf->map.lim.x_min = 0;
-	fdf->map.lim.y_max = 0;
-	fdf->map.lim.y_min = 0;
-
 	return (fdf);
 }
 
@@ -79,5 +73,7 @@ static void	set_parameters(t_fdf *fdf)
 		params->zoom = (H - P * 2.0f) / fabs(map->lim.y_max - map->lim.y_min);
 	scale(map, params->zoom);
 	set_limits(map);
+	params->cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - W / 2;
+	params->cy = (map->lim.y_min + (map->lim.y_max - map->lim.y_min) / 2) - H / 2;
 	shift(map, *params);
 }

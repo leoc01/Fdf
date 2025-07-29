@@ -63,7 +63,6 @@ static char	*store_content(char *file)
 static int	create_map(t_map *map, char *content)
 {
 	int	x;
-	int	i;
 
 	x = 0;
 	while (content[0])
@@ -87,16 +86,6 @@ static int	create_map(t_map *map, char *content)
 	map->size_x = x;
 	map->area = map->size_x * map->size_y;
 	map->point = ft_calloc(map->area, sizeof(t_point));
-	i = 0;
-	while (i < map->area)
-	{
-		map->point[i].ax = 0;
-		map->point[i].ay = 0;
-		map->point[i].az = 0;
-		map->point[i].px = 0;
-		map->point[i].py = 0;
-		i++;
-	}
 	return (1);
 }
 
