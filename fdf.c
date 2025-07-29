@@ -64,7 +64,8 @@ static void	set_parameters(t_fdf *fdf)
 
 	map = &fdf->map;
 	params = &fdf->params;
-	to_iso(map, (-M_PI / 2));
+	params->angle_dir = 0;
+	to_iso(map, 0);
 	set_limits(map);
 	dx_rel = W / fabs(map->lim.x_max - map->lim.x_min);
 	dy_rel = H / fabs(map->lim.y_max - map->lim.y_min);
