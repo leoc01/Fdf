@@ -20,12 +20,12 @@ t_color	set_color(char *content)
 	int		i;
 	t_color	color;
 
-	if (content[0] != '0' || ft_toupper(content[1]) != 'X')
+	if (*content && (content[0] != '0' || ft_toupper(content[1]) != 'X'))
 		return (hex_to_color("0XFFFFFF"));
 	i = 0;
 	while (i < 9)
 	{
-		if (content[0] != ' ' && content[0] != '\n')
+		if (*content && content[0] != ' ' && content[0] != '\n')
 		{
 			str_color[i] = content[0];
 			content++;

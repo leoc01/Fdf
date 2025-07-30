@@ -17,6 +17,7 @@ void	render(t_fdf *fdf)
 	t_data	*dt;
 	char	*fps;
 
+	fps = NULL;
 	dt = &fdf->data;
 	dt->img = mlx_new_image(fdf->mlx, W, H);
 	dt->addr = mlx_get_data_addr(dt->img, &dt->bpp, &dt->ln_len, &dt->endian);

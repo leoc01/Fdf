@@ -64,6 +64,7 @@ static void	set_parameters(t_fdf *fdf)
 
 	map = &fdf->map;
 	params = &fdf->params;
+	params->fps = 0;
 	params->angle_dir = 0;
 	to_iso(map, 0);
 	set_limits(map);
