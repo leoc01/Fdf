@@ -60,23 +60,23 @@ static void	set_parameters(t_fdf *fdf)
 	float		dx_rel;
 	float		dy_rel;
 	t_map		*map;
-	t_params	*params;
+	t_params	*par;
 
 	map = &fdf->map;
-	params = &fdf->params;
-	params->fps = 0;
-	params->angle_dir = 0;
+	par = &fdf->params;
+	par->fps = 0;
+	par->angle_dir = 0;
 	to_iso(map, 0);
 	set_limits(map);
 	dx_rel = W / fabs(map->lim.x_max - map->lim.x_min);
 	dy_rel = H / fabs(map->lim.y_max - map->lim.y_min);
-	params->zoom = (W - P * 2.0f) / fabs(map->lim.x_max - map->lim.x_min);
+	par->zoom = (W - P * 2.0f) / fabs(map->lim.x_max - map->lim.x_min);
 	if (dx_rel > dy_rel)
-		params->zoom = (H - P * 2.0f) / fabs(map->lim.y_max - map->lim.y_min);
-	params->zoom_min = params->zoom / 2;
-	scale(map, params->zoom);
+		par->zoom = (H - P * 2.0f) / fabs(map->lim.y_max - map->lim.y_min);
+	par->zoom_min = par->zoom / 2;
+	scale(map, par->zoom);
 	set_limits(map);
-	params->cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - W / 2;
-	params->cy = (map->lim.y_min + (map->lim.y_max - map->lim.y_min) / 2) - H / 2;
-	shift(map, *params);
+	par->cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - W / 2;
+	par->cy = (map->lim.y_min + (map->lim.y_max - map->lim.y_min) / 2) - H / 2;
+	shift(map, *par);
 }
