@@ -44,14 +44,14 @@ static char	*store_content(char *file)
 	size = read(fd, fs, 1);
 	if (fd < 0 || size != 1)
 		return (NULL);
-	br = 1;
+	br = size;
 	while (br > 0)
 	{
 		br = read(fd, fs, BUFFER);
 		size += br;
 	}
 	fd = close(fd);
-	content = ft_calloc(sizeof(char), (size + 1));
+	content = ft_calloc(sizeof(char), (size + 2));
 	fd = open(file, O_RDONLY);
 	if (fd < 0 || read(fd, content, size) < size)
 		return (free(content), NULL);
@@ -65,7 +65,7 @@ static int	create_map(t_map *map, char *content)
 	int	x;
 
 	x = 0;
-	while (*content)
+	while (content && *content)
 	{
 		while (*content && *content == ' ')
 			content++;
@@ -73,19 +73,17 @@ static int	create_map(t_map *map, char *content)
 			content++;
 		while (*content && *content == ' ')
 			content++;
-		map->size_x++;
-		if (*content == '\n')
+		if (++x && (*content == '\n' || *content == '\0'))
 		{
-			if (x == 0)
-				x = map->size_x;
+			if (map->size_x == 0)
+				map->size_x = x;
 			if (x != map->size_x)
 				return (0);
-			map->size_x = 0;
+			x = 0;
 			map->size_y++;
+			content++;
 		}
-		content++;
 	}
-	map->size_x = x;
 	map->area = map->size_x * map->size_y;
 	map->point = ft_calloc(map->area, sizeof(t_point));
 	return (1);
