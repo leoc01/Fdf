@@ -32,6 +32,10 @@ int	key_press(int keysym, t_fdf *fdf)
 		fdf->params.angle_dir += 1;
 	if (keysym == LEFT)
 		fdf->params.angle_dir -= 1;
+	if (keysym == E_KEY)
+		fdf->params.z_fac_dir -= 1;
+	if (keysym == Q_KEY)
+		fdf->params.z_fac_dir += 1;
 	return (0);
 }
 
@@ -53,6 +57,10 @@ int	key_release(int keysym, t_fdf *fdf)
 		fdf->params.angle_dir -= 1;
 	if (keysym == LEFT)
 		fdf->params.angle_dir += 1;
+	if (keysym == E_KEY)
+		fdf->params.z_fac_dir += 1;
+	if (keysym == Q_KEY)
+		fdf->params.z_fac_dir -= 1;
 	return (0);
 }
 

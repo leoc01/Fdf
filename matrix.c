@@ -23,14 +23,14 @@ void	set_limits(t_map *map)
 	map->lim.y_min = 0;
 	while (i < map->area)
 	{
-		if (map->point[i].px > map->lim.x_max)
-			map->lim.x_max = map->point[i].px;
-		if (map->point[i].px < map->lim.x_min)
-			map->lim.x_min = map->point[i].px;
-		if (map->point[i].py > map->lim.y_max)
-			map->lim.y_max = map->point[i].py;
-		if (map->point[i].py < map->lim.y_min)
-			map->lim.y_min = map->point[i].py;
+		if (map->point[i].bx > map->lim.x_max)
+			map->lim.x_max = map->point[i].bx;
+		if (map->point[i].bx < map->lim.x_min)
+			map->lim.x_min = map->point[i].bx;
+		if (map->point[i].by > map->lim.y_max)
+			map->lim.y_max = map->point[i].by;
+		if (map->point[i].by < map->lim.y_min)
+			map->lim.y_min = map->point[i].by;
 		i++;
 	}
 }
@@ -40,18 +40,20 @@ void	to_iso(t_map *map, float z_angle)
 	int		i;
 	float	cos_a;
 	float	sin_a;
-	float	rotated_x;
-	float	rotated_y;
+	float	rot_x;
+	float	rot_y;
 
 	cos_a = cos(z_angle);
 	sin_a = sin(z_angle);
 	i = 0;
 	while (i < map->area)
 	{
-		rotated_x = map->point[i].ax * cos_a - map->point[i].ay * sin_a;
-		rotated_y = map->point[i].ax * sin_a + map->point[i].ay * cos_a;
-		map->point[i].px = (rotated_x - rotated_y) * 2;
-		map->point[i].py = (rotated_x + rotated_y) - map->point[i].az / Z_FAC;
+		rot_x = map->point[i].ax * cos_a - map->point[i].ay * sin_a;
+		rot_y = map->point[i].ax * sin_a + map->point[i].ay * cos_a;
+		map->point[i].bx = (rot_x - rot_y) * 2;
+		map->point[i].by = (rot_x + rot_y);
+		map->point[i].px = (rot_x - rot_y) * 2;
+		map->point[i].py = (rot_x + rot_y) - map->point[i].az / map->z_fac;
 		i++;
 	}
 }
@@ -63,6 +65,8 @@ void	scale(t_map *map, float zoom)
 	i = 0;
 	while (i < map->area)
 	{
+		map->point[i].bx *= zoom;
+		map->point[i].by *= zoom;
 		map->point[i].px *= zoom;
 		map->point[i].py *= zoom;
 		i++;
@@ -78,6 +82,8 @@ void	shift(t_map *map, t_params p)
 	i = 0;
 	while (i < map->area)
 	{
+		map->point[i].bx = map->point[i].bx - p.cx + p.shx * p.zoom;
+		map->point[i].by = map->point[i].by - p.cy + p.shy * p.zoom;
 		map->point[i].px = map->point[i].px - p.cx + p.shx * p.zoom;
 		map->point[i].py = map->point[i].py - p.cy + p.shy * p.zoom;
 		i++;

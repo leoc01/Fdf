@@ -66,6 +66,8 @@ static void	set_parameters(t_fdf *fdf)
 	par = &fdf->params;
 	par->fps = 0;
 	par->angle_dir = 0;
+	map->z_fac = 1;
+	par->z_fac_dir = 0;
 	to_iso(map, 0);
 	set_limits(map);
 	dx_rel = W / fabs(map->lim.x_max - map->lim.x_min);

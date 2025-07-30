@@ -24,6 +24,9 @@
 #define P 100
 
 #define ESC 65307
+#define NUM_PLUS 65451
+#define NUM_MINUS 65453
+#define DOWN 65364
 #define UP 65362
 #define DOWN 65364
 #define LEFT 65361
@@ -32,8 +35,8 @@
 #define A_KEY 97
 #define S_KEY 115
 #define D_KEY 100
-
-#define Z_FAC 6
+#define E_KEY 101
+#define Q_KEY 113
 
 #define BUFFER 50000
 
@@ -59,6 +62,8 @@ typedef struct s_point
 	float	az;
 	float	px;
 	float	py;
+	float	bx;
+	float	by;
 	t_color	color;
 }	t_point;
 
@@ -85,6 +90,7 @@ typedef struct s_map
 {
 	int			size_x;
 	int			size_y;
+	float		z_fac;
 	int			area;
 	t_point		*point;
 	t_limits	lim;
@@ -104,6 +110,7 @@ typedef struct s_params
 	int			x_dir;
 	int			y_dir;
 	float		z_angle;
+	int			z_fac_dir;
 	int			angle_dir;
 	int			fps;
 }	t_params;
