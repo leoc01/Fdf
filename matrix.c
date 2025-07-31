@@ -50,10 +50,12 @@ void	to_iso(t_map *map, float z_angle)
 	{
 		rot_x = map->point[i].ax * cos_a - map->point[i].ay * sin_a;
 		rot_y = map->point[i].ax * sin_a + map->point[i].ay * cos_a;
-		map->point[i].bx = (rot_x - rot_y) * 2;
+		map->point[i].bx = (rot_x - rot_y) * map->projection;
 		map->point[i].by = (rot_x + rot_y);
-		map->point[i].px = (rot_x - rot_y) * 2;
-		map->point[i].py = (rot_x + rot_y) - map->point[i].az / map->z_fac;
+		map->point[i].px = (rot_x - rot_y) * map->projection;
+		map->point[i].py = (rot_x + rot_y);
+		if (map->projection == 2)
+			map->point[i].py -= map->point[i].az / map->z_fac;
 		i++;
 	}
 }
@@ -88,4 +90,12 @@ void	shift(t_map *map, t_params p)
 		map->point[i].py = map->point[i].py - p.cy + p.shy * p.zoom;
 		i++;
 	}
+}
+
+void	change_projection(int *projection)
+{
+	if (*projection == 1)
+		*projection = 2;
+	else
+		*projection = 1;
 }

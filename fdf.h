@@ -37,6 +37,7 @@
 #define D_KEY 100
 #define E_KEY 101
 #define Q_KEY 113
+#define P_KEY 112
 
 #define BUFFER 50000
 
@@ -92,6 +93,7 @@ typedef struct s_map
 	int			size_y;
 	float		z_fac;
 	int			area;
+	int			projection;
 	t_point		*point;
 	t_limits	lim;
 }	t_map;
@@ -152,11 +154,13 @@ void		set_limits(t_map *map);
 void		to_iso(t_map *map, float anglez);
 void		scale(t_map *map, float zoom);
 void		shift(t_map *map, t_params params);
+void		change_projection(int *projection);
 
 // render
 void		putpix(t_data *data, int x, int y, int color);
 void		render(t_fdf *fdf);
 void		draw(t_fdf *fdf, t_data *data);
+
 //line
 void		d_line(t_data *data, t_point i, t_point f);
 

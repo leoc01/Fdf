@@ -12,6 +12,8 @@
 
 #include "fdf.h"
 
+static void	check_n_draw(t_map *map, int i, t_data *data);
+
 void	render(t_fdf *fdf)
 {
 	t_data	*dt;
@@ -41,7 +43,7 @@ void	putpix(t_data *data, int x, int y, int color)
 
 void	draw(t_fdf *fdf, t_data *data)
 {
-	int	i;
+	int		i;
 	t_map	*map;
 
 	map = &fdf->map;
@@ -50,10 +52,7 @@ void	draw(t_fdf *fdf, t_data *data)
 		i = map->area;
 		while (i > 0)
 		{
-			if (map->point[i].ax)
-				d_line(data, map->point[i - 1], map->point[i]);
-			if (map->point[i].ay)
-				d_line(data, map->point[i], map->point[i - map->size_x]);
+			check_n_draw(map, i, data);
 			i--;
 		}
 	}
@@ -62,12 +61,17 @@ void	draw(t_fdf *fdf, t_data *data)
 		i = 0;
 		while (i < map->area)
 		{
-			if (map->point[i].ax)
-				d_line(data, map->point[i - 1], map->point[i]);
-			if (map->point[i].ay)
-				d_line(data, map->point[i], map->point[i - map->size_x]);
+			check_n_draw(map, i, data);
 			i++;
 		}
 	}
 	putpix(data, map->point[0].px, map->point[0].py, 0x00FF00);
+}
+
+static void	check_n_draw(t_map *map, int i, t_data *data)
+{
+	if (map->point[i].ax)
+		d_line(data, map->point[i - 1], map->point[i]);
+	if (map->point[i].ay)
+		d_line(data, map->point[i], map->point[i - map->size_x]);
 }

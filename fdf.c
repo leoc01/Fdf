@@ -42,6 +42,7 @@ static t_fdf	*initialize_fdf(void)
 	fdf->mlx = NULL;
 	fdf->mlx_win = NULL;
 	fdf->map.point = NULL;
+	fdf->map.projection = 2;
 	fdf->file_content = NULL;
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)

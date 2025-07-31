@@ -36,6 +36,8 @@ int	key_press(int keysym, t_fdf *fdf)
 		fdf->params.z_fac_dir -= 1;
 	if (keysym == Q_KEY)
 		fdf->params.z_fac_dir += 1;
+	if (keysym == P_KEY)
+		change_projection(&fdf->map.projection);
 	return (0);
 }
 
