@@ -156,7 +156,7 @@ void		shift(t_map *map, t_params params);
 // render
 void		putpix(t_data *data, int x, int y, int color);
 void		render(t_fdf *fdf);
-void		draw(t_map *map, t_data *data);
+void		draw(t_fdf *fdf, t_data *data);
 //line
 void		d_line(t_data *data, t_point i, t_point f);
 

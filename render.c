@@ -21,7 +21,7 @@ void	render(t_fdf *fdf)
 	dt = &fdf->data;
 	dt->img = mlx_new_image(fdf->mlx, W, H);
 	dt->addr = mlx_get_data_addr(dt->img, &dt->bpp, &dt->ln_len, &dt->endian);
-	draw(&fdf->map, dt);
+	draw(fdf, dt);
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, dt->img, 0, 0);
 	fps = ft_itoa(fdf->params.fps);
 	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 20, 0x00FFFFFF, fps);
@@ -39,17 +39,35 @@ void	putpix(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	draw(t_map *map, t_data *data)
+void	draw(t_fdf *fdf, t_data *data)
 {
 	int	i;
+	t_map	*map;
 
-	i = 1;
-	while (i < map->area)
+	map = &fdf->map;
+	if (map->point[0].px >= map->point[map->size_y - 1].px)
 	{
-		if (map->point[i].ax)
-			d_line(data, map->point[i - 1], map->point[i]);
-		if (map->point[i].ay)
-			d_line(data, map->point[i], map->point[i - map->size_x]);
-		i++;
+		i = map->area;
+		while (i > 0)
+		{
+			if (map->point[i].ax)
+				d_line(data, map->point[i - 1], map->point[i]);
+			if (map->point[i].ay)
+				d_line(data, map->point[i], map->point[i - map->size_x]);
+			i--;
+		}
 	}
+	else
+	{
+		i = 0;
+		while (i < map->area)
+		{
+			if (map->point[i].ax)
+				d_line(data, map->point[i - 1], map->point[i]);
+			if (map->point[i].ay)
+				d_line(data, map->point[i], map->point[i - map->size_x]);
+			i++;
+		}
+	}
+	putpix(data, map->point[0].px, map->point[0].py, 0x00FF00);
 }

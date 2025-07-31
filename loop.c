@@ -22,7 +22,7 @@ void	update(t_fdf *fdf)
 		p->zoom += p->zoom_dir * p->zoom * p->delta;
 	p->shx += p->x_dir * p->delta * 400 / p->zoom;
 	p->shy += p->y_dir * p->delta * 400 / p->zoom;
-	p->z_angle += p->angle_dir * p->delta * 0.7;
+	p->z_angle += p->angle_dir * p->delta * 0.8;
 	fdf->map.z_fac += p->z_fac_dir * fdf->map.z_fac * p->delta;
 	to_iso(&fdf->map, p->z_angle);
 	scale(&fdf->map, p->zoom);
