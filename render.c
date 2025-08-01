@@ -19,14 +19,26 @@ void	render(t_fdf *fdf)
 	t_data	*dt;
 	char	*fps;
 
-	fps = NULL;
 	dt = &fdf->data;
 	dt->img = mlx_new_image(fdf->mlx, W, H);
 	dt->addr = mlx_get_data_addr(dt->img, &dt->bpp, &dt->ln_len, &dt->endian);
 	draw(fdf, dt);
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, dt->img, 0, 0);
 	fps = ft_itoa(fdf->params.fps);
-	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 20, 0x00FFFFFF, fps);
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 20, 0xFFFFFF, "FPS: ");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 50, 20, 0xFFFFFF, fps);
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 40, 0xFFFFFF, "Move:");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 55, 0xFFFFFF, "W A S D");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 75, 0xFFFFFF, "Rotate:");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 90, 0xFFFFFF, "LEFT RIGHT");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 110, 0xFFFFFF, "Zoom:");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 125, 0xFFFFFF, "UP DOWN");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 145, 0xFFFFFF, "Height:");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 160, 0xFFFFFF, "Q E");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 180, 0xFFFFFF, "Projection:");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 195, 0xFFFFFF, "P");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 215, 0xFFFFFF, "Close:");
+	mlx_string_put(fdf->mlx, fdf->mlx_win, 20, 230, 0xFFFFFF, "ESC");
 	free(fps);
 	mlx_destroy_image(fdf->mlx, dt->img);
 }
