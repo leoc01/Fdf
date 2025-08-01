@@ -6,7 +6,7 @@
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 18:45:35 by lbuscaro          #+#    #+#             */
-/*   Updated: 2025/07/25 18:45:37 by lbuscaro         ###   ########.fr       */
+/*   Updated: 2025/08/01 16:52:40 by lbuscaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ void	set_limits(t_map *map)
 	int	i;
 
 	i = 0;
-	map->lim.x_max = 0;
-	map->lim.x_min = 0;
-	map->lim.y_max = 0;
-	map->lim.y_min = 0;
+	map->lim.x_max = -W;
+	map->lim.x_min = W;
+	map->lim.y_max = -H;
+	map->lim.y_min = H;
 	while (i < map->area)
 	{
 		if (map->point[i].bx > map->lim.x_max)

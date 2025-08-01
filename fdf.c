@@ -6,7 +6,7 @@
 /*   By: lbuscaro <lbuscaro@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 15:43:36 by lbuscaro          #+#    #+#             */
-/*   Updated: 2025/07/09 17:53:45 by lbuscaro         ###   ########.fr       */
+/*   Updated: 2025/08/01 16:48:47 by lbuscaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static t_fdf	*initialize_fdf(void);
 static void		set_parameters(t_fdf *fdf);
+static void		init_limits(t_map *map);
 
 int	main(int argc, char **argv)
 {
@@ -71,16 +72,37 @@ static void	set_parameters(t_fdf *fdf)
 	par->z_fac_min = 0.5f;
 	par->z_fac_dir = 0;
 	to_iso(map, 0);
-	set_limits(map);
+	init_limits(map);
 	dx_rel = W / fabs(map->lim.x_max - map->lim.x_min);
 	dy_rel = H / fabs(map->lim.y_max - map->lim.y_min);
 	par->zoom = (W - P * 2.0f) / fabs(map->lim.x_max - map->lim.x_min);
-	if (dx_rel > dy_rel)
+	if (dx_rel < dy_rel)
 		par->zoom = (H - P * 2.0f) / fabs(map->lim.y_max - map->lim.y_min);
-	par->zoom_min = par->zoom / 2;
+	par->zoom_min = par->zoom / 4;
 	scale(map, par->zoom);
-	set_limits(map);
-	par->cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - W / 2;
-	par->cy = (map->lim.y_min + (map->lim.y_max - map->lim.y_min) / 2) - H / 2;
+	init_limits(map);
 	shift(map, *par);
+}
+
+static void	init_limits(t_map *map)
+{
+	int	i;
+
+	i = 0;
+	map->lim.x_max = -W;
+	map->lim.x_min = W;
+	map->lim.y_max = -H;
+	map->lim.y_min = H;
+	while (i < map->area)
+	{
+		if (map->point[i].px > map->lim.x_max)
+			map->lim.x_max = map->point[i].px;
+		if (map->point[i].px < map->lim.x_min)
+			map->lim.x_min = map->point[i].px;
+		if (map->point[i].py > map->lim.y_max)
+			map->lim.y_max = map->point[i].py;
+		if (map->point[i].py < map->lim.y_min)
+			map->lim.y_min = map->point[i].py;
+		i++;
+	}
 }
