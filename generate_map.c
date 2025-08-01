@@ -63,13 +63,15 @@ static char	*store_content(char *file)
 static int	create_map(t_map *map, char *content)
 {
 	int	x;
+	int	valid;
 
+	valid = 0;
 	x = 0;
 	while (content && *content)
 	{
 		while (*content && *content == ' ')
 			content++;
-		while (*content && *content != ' ' && *content != '\n')
+		while (*content && *content != ' ' && *content != '\n' && ++valid)
 			content++;
 		while (*content && *content == ' ')
 			content++;
@@ -77,7 +79,7 @@ static int	create_map(t_map *map, char *content)
 		{
 			if (map->size_x == 0)
 				map->size_x = x;
-			if (x != map->size_x)
+			if (x != map->size_x || !valid)
 				return (0);
 			x = 0;
 			map->size_y++;
