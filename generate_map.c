@@ -13,7 +13,7 @@
 #include "fdf.h"
 
 static char	*store_content(char *file);
-static int	create_map(t_map *map, char *map_file);
+static int	get_area(t_map *map, char *map_file);
 static void	get_points(t_map *map, char *map_file);
 static int	save_point(t_map *map, char *map_file, int i, int j);
 
@@ -22,11 +22,15 @@ void	load_file_data(t_fdf *fdf, char *file)
 	fdf->file_content = store_content(file);
 	if (!fdf->file_content)
 		close_fdf(fdf, file, ": Invalid file");
-	if (!create_map(&fdf->map, fdf->file_content))
+	fdf->map.area = get_area(&fdf->map, fdf->file_content);
+	if (!fdf->map.area)
 	{
 		free(fdf->file_content);
 		close_fdf(fdf, file, ": Malformed map data");
 	}
+	fdf->map.point = ft_calloc(fdf->map.area, sizeof(t_point));
+	if (!fdf->map.point)
+		close_fdf(fdf, "Memory allocation error.", NULL);
 	get_points(&fdf->map, fdf->file_content);
 	free(fdf->file_content);
 	fdf->file_content = NULL;
@@ -60,10 +64,10 @@ static char	*store_content(char *file)
 	return (content);
 }
 
-static int	create_map(t_map *map, char *content)
+static int	get_area(t_map *map, char *content)
 {
 	int	x;
-	int valid;
+	int	valid;
 
 	valid = 0;
 	x = 0;
@@ -86,9 +90,7 @@ static int	create_map(t_map *map, char *content)
 			content++;
 		}
 	}
-	map->area = map->size_x * map->size_y;
-	map->point = ft_calloc(map->area, sizeof(t_point));
-	return (1);
+	return (map->size_x * map->size_y);
 }
 
 static void	get_points(t_map *map, char *content)
