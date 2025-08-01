@@ -113,6 +113,7 @@ typedef struct s_params
 	int			y_dir;
 	float		z_angle;
 	int			z_fac_dir;
+	float		z_fac_min;
 	int			angle_dir;
 	int			fps;
 }	t_params;

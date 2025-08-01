@@ -23,7 +23,8 @@ void	update(t_fdf *fdf)
 	p->shx += p->x_dir * p->delta * 400 / p->zoom;
 	p->shy += p->y_dir * p->delta * 400 / p->zoom;
 	p->z_angle += p->angle_dir * p->delta * 0.8;
-	fdf->map.z_fac += p->z_fac_dir * fdf->map.z_fac * p->delta;
+	if (fdf->map.z_fac > p->z_fac_min || p->z_fac_dir > 0)
+		fdf->map.z_fac += p->z_fac_dir * p->delta * fdf->map.z_fac;
 	to_iso(&fdf->map, p->z_angle);
 	scale(&fdf->map, p->zoom);
 	set_limits(&fdf->map);

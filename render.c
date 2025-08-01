@@ -77,7 +77,6 @@ void	draw(t_fdf *fdf, t_data *data)
 			i++;
 		}
 	}
-	putpix(data, map->point[0].px, map->point[0].py, 0x00FF00);
 }
 
 static void	check_n_draw(t_map *map, int i, t_data *data)

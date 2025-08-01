@@ -68,6 +68,7 @@ static void	set_parameters(t_fdf *fdf)
 	par->fps = 0;
 	par->angle_dir = 0;
 	map->z_fac = 1;
+	par->z_fac_min = 0.5f;
 	par->z_fac_dir = 0;
 	to_iso(map, 0);
 	set_limits(map);
