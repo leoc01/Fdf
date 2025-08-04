@@ -17,10 +17,10 @@ void	set_limits(t_map *map)
 	int	i;
 
 	i = 0;
-	map->lim.x_max = 0;
-	map->lim.x_min = 0;
-	map->lim.y_max = 0;
-	map->lim.y_min = 0;
+	map->lim.x_max = -W;
+	map->lim.x_min = W;
+	map->lim.y_max = -H;
+	map->lim.y_min = H;
 	while (i < map->area)
 	{
 		if (map->point[i].px > map->lim.x_max)
