@@ -10,36 +10,39 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <libft.h>
-#include <sys/time.h>
+#ifndef FDF_BONUS_H
+# define FDF_BONUS_H
 
-#define W 1920
-#define H 1050
-#define P 100
+# include <mlx.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <math.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <libft.h>
+# include <sys/time.h>
 
-#define ESC 65307
-#define NUM_PLUS 65451
-#define NUM_MINUS 65453
-#define DOWN 65364
-#define UP 65362
-#define DOWN 65364
-#define LEFT 65361
-#define RIGHT 65363
-#define W_KEY 119
-#define A_KEY 97
-#define S_KEY 115
-#define D_KEY 100
-#define E_KEY 101
-#define Q_KEY 113
-#define P_KEY 112
+# define W 1920
+# define H 1050
+# define P 100
 
-#define BUFFER 50000
+# define ESC 65307
+# define NUM_PLUS 65451
+# define NUM_MINUS 65453
+# define DOWN 65364
+# define UP 65362
+# define DOWN 65364
+# define LEFT 65361
+# define RIGHT 65363
+# define W_KEY 119
+# define A_KEY 97
+# define S_KEY 115
+# define D_KEY 100
+# define E_KEY 101
+# define Q_KEY 113
+# define P_KEY 112
+
+# define BUFFER 50000
 
 typedef struct s_color
 {
@@ -175,3 +178,5 @@ void		calculate_delta(t_fdf *fdf);
 int			key_press(int keysym, t_fdf *fdf);
 int			key_release(int keysym, t_fdf *fdf);
 int			close_fdf(t_fdf *fdf);
+
+#endif

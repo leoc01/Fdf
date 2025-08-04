@@ -10,23 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <libft.h>
+#ifndef FDF_H
+# define FDF_H
 
-#define W 1920
-#define H 1000
-#define P 50
+# include <mlx.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <math.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <libft.h>
 
-#define ESC 65307
+# define W 1920
+# define H 1000
+# define P 50
 
-#define Z_FAC 1
+# define ESC 65307
 
-#define BUFFER 50000
+# define Z_FAC 1
+
+# define BUFFER 50000
 
 typedef struct s_color
 {
@@ -138,3 +141,5 @@ void	putpix(t_data *data, int x, int y, int color);
 // hooks
 int		key_press(int keysyn, t_fdf *fdf);
 int		close_fdf(t_fdf *fdf);
+
+#endif
