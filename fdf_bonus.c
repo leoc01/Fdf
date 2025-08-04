@@ -39,7 +39,7 @@ static t_fdf	*initialize_fdf(void)
 
 	fdf = ft_calloc(1, sizeof (t_fdf));
 	if (!fdf)
-		close_fdf(fdf, NULL, "Fail to init FDF");
+		close_fdf(fdf);
 	fdf->mlx = NULL;
 	fdf->mlx_win = NULL;
 	fdf->map.point = NULL;
@@ -47,10 +47,10 @@ static t_fdf	*initialize_fdf(void)
 	fdf->file_content = NULL;
 	fdf->mlx = mlx_init();
 	if (!fdf->mlx)
-		close_fdf(fdf, NULL, "Fail to init MLX");
+		close_fdf(fdf);
 	fdf->mlx_win = mlx_new_window(fdf->mlx, W, H, "Fdf");
 	if (!fdf->mlx_win)
-		close_fdf(fdf, NULL, "Fail to create window");
+		close_fdf(fdf);
 	mlx_hook(fdf->mlx_win, 17, (1L << 17), close_fdf, fdf);
 	mlx_hook(fdf->mlx_win, 02, (1L << 0), key_press, fdf);
 	mlx_hook(fdf->mlx_win, 03, (1L << 1), key_release, fdf);

@@ -15,16 +15,12 @@
 int	key_press(int keysym, t_fdf *fdf)
 {
 	if (keysym == ESC)
-		close_fdf(fdf, NULL, NULL);
+		close_fdf(fdf);
 	return (0);
 }
 
-int	close_fdf(t_fdf *fdf, char *msg, char *err)
+int	close_fdf(t_fdf *fdf)
 {
-	if (msg)
-		ft_putstr_fd(msg, 2);
-	if (err)
-		perror(err);
 	if (fdf->map.point)
 		free(fdf->map.point);
 	if (fdf->mlx_win)
@@ -34,7 +30,5 @@ int	close_fdf(t_fdf *fdf, char *msg, char *err)
 		mlx_destroy_display(fdf->mlx);
 		free(fdf->mlx);
 	}
-	if (msg)
-		exit (1);
 	exit (0);
 }

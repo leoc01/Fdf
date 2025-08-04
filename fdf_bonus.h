@@ -174,4 +174,4 @@ void		calculate_delta(t_fdf *fdf);
 // hooks
 int			key_press(int keysym, t_fdf *fdf);
 int			key_release(int keysym, t_fdf *fdf);
-int			close_fdf(t_fdf *fdf, char *msg, char *err);
+int			close_fdf(t_fdf *fdf);

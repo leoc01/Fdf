@@ -15,7 +15,7 @@
 int	key_press(int keysym, t_fdf *fdf)
 {
 	if (keysym == ESC)
-		close_fdf(fdf, NULL, NULL);
+		close_fdf(fdf);
 	if (keysym == UP)
 		fdf->params.zoom_dir += 1;
 	if (keysym == DOWN)
@@ -73,12 +73,8 @@ int	loop(t_fdf *fdf)
 	return (0);
 }
 
-int	close_fdf(t_fdf *fdf, char *msg, char *err)
+int	close_fdf(t_fdf *fdf)
 {
-	if (msg)
-		ft_putstr_fd(msg, 2);
-	if (err)
-		perror(err);
 	if (fdf->map.point)
 		free(fdf->map.point);
 	if (fdf->mlx_win)
@@ -90,7 +86,5 @@ int	close_fdf(t_fdf *fdf, char *msg, char *err)
 	}
 	if (fdf)
 		free(fdf);
-	if (msg)
-		exit (1);
 	exit (0);
 }

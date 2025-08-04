@@ -137,4 +137,4 @@ void	putpix(t_data *data, int x, int y, int color);
 
 // hooks
 int		key_press(int keysyn, t_fdf *fdf);
-int		close_fdf(t_fdf *fdf, char *msg, char *err);
+int		close_fdf(t_fdf *fdf);

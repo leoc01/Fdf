@@ -21,16 +21,25 @@ void	load_file_data(t_fdf *fdf, char *file)
 {
 	fdf->file_content = store_content(file);
 	if (!fdf->file_content)
-		close_fdf(fdf, file, ": Invalid file");
+	{
+		ft_putstr_fd(file, 2);
+		perror(": Invalid file");
+		close_fdf(fdf);
+	}
 	fdf->map.area = get_area(&fdf->map, fdf->file_content);
 	if (!fdf->map.area)
 	{
 		free(fdf->file_content);
-		close_fdf(fdf, file, ": Malformed map data");
+		ft_putstr_fd(file, 2);
+		perror(": Malformed map data");
+		close_fdf(fdf);
 	}
 	fdf->map.point = ft_calloc(fdf->map.area, sizeof(t_point));
 	if (!fdf->map.point)
-		close_fdf(fdf, "Memory allocation error.", NULL);
+	{
+		ft_putstr_fd("Memory allocation error", 2);
+		close_fdf(fdf);
+	}
 	get_points(&fdf->map, fdf->file_content);
 	free(fdf->file_content);
 	fdf->file_content = NULL;
