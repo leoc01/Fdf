@@ -12,7 +12,7 @@
 
 #include "fdf_bonus.h"
 
-static void	check_n_draw(t_map *map, int i, t_data *data);
+static void	draw_direction(t_map *map, int i, t_data *data);
 
 void	render(t_fdf *fdf)
 {
@@ -59,12 +59,12 @@ void	draw(t_fdf *fdf, t_data *data)
 	t_map	*map;
 
 	map = &fdf->map;
-	if (map->point[0].px >= map->point[map->size_y - 1].px)
+	if (map->point[0].px > map->point[map->size_y - 1].px)
 	{
-		i = map->area;
-		while (i > 0)
+		i = map->area - 1;
+		while (i >= 0)
 		{
-			check_n_draw(map, i, data);
+			draw_direction(map, i, data);
 			i--;
 		}
 	}
@@ -73,13 +73,13 @@ void	draw(t_fdf *fdf, t_data *data)
 		i = 0;
 		while (i < map->area)
 		{
-			check_n_draw(map, i, data);
+			draw_direction(map, i, data);
 			i++;
 		}
 	}
 }
 
-static void	check_n_draw(t_map *map, int i, t_data *data)
+static void	draw_direction(t_map *map, int i, t_data *data)
 {
 	if (map->point[i].ax)
 		d_line(data, map->point[i - 1], map->point[i]);
