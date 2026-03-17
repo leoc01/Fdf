@@ -1,0 +1,31 @@
+NAME = fdf.html
+
+CC = emcc
+CFLAGS = -Wall -Werror -Wextra -O3 -sUSE_SDL=2 -D__EMSCRIPTEN__
+RM = rm -rf
+SRC = emscripten_main.c color.c generate_map.c gradient.c hooks.c line_sdl.c loop.c matrix.c render_sdl.c
+
+OBJ = $(SRC:.c=.o)
+
+all: $(NAME)
+
+$(NAME): $(OBJ) libft/libft.a
+	$(CC) $(CFLAGS) $(OBJ) -Llibft -lft -lm -o $(NAME) --preload-file maps -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=67108864 -s WASM=1 -s USE_SDL=2 --shell-file working_template.html
+
+%.o: %.c
+	$(CC) $(CFLAGS) -Ilibft -c $< -o $@
+
+libft/libft.a:
+	emmake make -C libft all
+
+clean:
+	$(RM) $(OBJ)
+	make -C libft clean
+
+fclean: clean
+	$(RM) $(NAME) $(NAME).js $(NAME).wasm $(NAME).data
+	make -C libft fclean
+
+re: fclean all
+
+.PHONY: all clean fclean re

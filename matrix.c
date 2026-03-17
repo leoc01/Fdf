@@ -75,12 +75,12 @@ void	scale(t_map *map, float zoom)
 	}
 }
 
-void	shift(t_map *map, t_params p)
+void	shift(t_map *map, t_params p, int win_w, int win_h)
 {
 	int	i;
 
-	p.cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - W / 2;
-	p.cy = (map->lim.y_min + (map->lim.y_max - map->lim.y_min) / 2) - H / 2;
+	p.cx = (map->lim.x_min + (map->lim.x_max - map->lim.x_min) / 2) - win_w / 2;
+	p.cy = (map->lim.y_min + (map->lim.y_max - map->lim.y_min) / 2) - win_h / 2;
 	i = 0;
 	while (i < map->area)
 	{

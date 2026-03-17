@@ -10,34 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <libft.h>
 #include <sys/time.h>
+#include <SDL2/SDL.h>
 
-#define W 1920
-#define H 1050
+#define W 1366
+#define H 700
 #define P 100
 
-#define ESC 65307
-#define NUM_PLUS 65451
-#define NUM_MINUS 65453
-#define DOWN 65364
-#define UP 65362
-#define DOWN 65364
-#define LEFT 65361
-#define RIGHT 65363
-#define W_KEY 119
-#define A_KEY 97
-#define S_KEY 115
-#define D_KEY 100
-#define E_KEY 101
-#define Q_KEY 113
-#define P_KEY 112
+#define ESC SDLK_ESCAPE
+#define NUM_PLUS SDLK_KP_PLUS
+#define NUM_MINUS SDLK_KP_MINUS
+#define DOWN SDLK_DOWN
+#define UP SDLK_UP
+#define LEFT SDLK_LEFT
+#define RIGHT SDLK_RIGHT
+#define W_KEY SDLK_w
+#define A_KEY SDLK_a
+#define S_KEY SDLK_s
+#define D_KEY SDLK_d
+#define E_KEY SDLK_e
+#define Q_KEY SDLK_q
+#define P_KEY SDLK_p
 
 #define BUFFER 50000
 
@@ -96,6 +96,14 @@ typedef struct s_map
 	int			projection;
 	t_point		*point;
 	t_limits	lim;
+
+	// Geometry batching for fast SDL rendering with gradients
+	SDL_Vertex		*vbuf;     // dynamic vertex buffer
+	int				vcount;    // number of used vertices
+	int				vcap;      // capacity of vertex buffer
+	int				*ibuf;     // dynamic index buffer
+	int				icount;    // number of used indices
+	int				icap;      // capacity of index buffer
 }	t_map;
 
 typedef struct s_params
@@ -119,21 +127,23 @@ typedef struct s_params
 
 typedef struct s_data
 {
-	void	*img;
-	char	*addr;
-	int		bpp;
-	int		ln_len;
-	int		endian;
+	char	*addr;     // raw pixel buffer (from SDL_LockTexture)
+	int		bpp;      // bits per pixel (always 32 for ARGB8888)
+	int		ln_len;   // pitch (bytes per row)
+	int		endian;   // not really needed, SDL gives ARGB8888
 }	t_data;
 
 typedef struct s_fdf
 {
-	void		*mlx;
-	void		*mlx_win;
-	char		*file_content;
-	t_data		data;
-	t_map		map;
-	t_params	params;
+	SDL_Window		*window;
+	SDL_Renderer	*renderer;
+	SDL_Texture		*texture;     // NEW: our framebuffer
+	char			*file_content;
+	int				win_w;
+	int				win_h;
+	t_data			data;
+	t_map			map;
+	t_params		params;
 }	t_fdf;
 
 // main
@@ -153,16 +163,20 @@ t_color		set_color(char *content);
 void		set_limits(t_map *map);
 void		to_iso(t_map *map, float anglez);
 void		scale(t_map *map, float zoom);
-void		shift(t_map *map, t_params params);
+void		shift(t_map *map, t_params params, int win_w, int win_h);
 void		change_projection(int *projection);
 
 // render
-void		putpix(t_data *data, int x, int y, int color);
-void		render(t_fdf *fdf);
-void		draw(t_fdf *fdf, t_data *data);
+void		putpix(t_data *data, int x, int y, int color, int win_w, int win_h);
+
+// enhanced rendering with SDL
+void		render_sdl(t_fdf *fdf);
+void		draw_sdl(t_fdf *fdf);
+void		geometry_begin(t_fdf *fdf);
+void		geometry_flush(t_fdf *fdf);
 
 //line
-void		d_line(t_data *data, t_point i, t_point f);
+void		d_line_sdl(t_fdf *fdf, t_point i, t_point f);
 
 // loop
 void		update(t_fdf *fdf);
@@ -174,3 +188,10 @@ void		calculate_delta(t_fdf *fdf);
 int			key_press(int keysym, t_fdf *fdf);
 int			key_release(int keysym, t_fdf *fdf);
 int			close_fdf(t_fdf *fdf, char *msg, char *err);
+
+// main
+#ifndef __EMSCRIPTEN__
+// Only declare these if not compiling with emscripten
+t_fdf	*initialize_fdf(void);
+void	set_parameters(t_fdf *fdf);
+#endif

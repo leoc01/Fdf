@@ -120,6 +120,8 @@ static int	save_point(t_map *map, char *content, int i, int j)
 	map->point[j + (i * map->size_x)].ax = j;
 	map->point[j + (i * map->size_x)].ay = i;
 	map->point[j + (i * map->size_x)].az = ft_atoi(&content[c]);
+	if (content[c] == '-' || content[c] == '+')
+		c++;
 	while (content[c] && content[c] >= '0' && content[c] <= '9')
 		c++;
 	if (content[c] == ',')

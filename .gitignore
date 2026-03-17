@@ -1,1 +1,19 @@
+# Vim swap files
 .*.swp
+
+# Build artifacts
+*.o
+fdf
+libft/libft.a
+
+# Emscripten build output
+fdf.js
+fdf.wasm
+fdf.data
+fdf.html
+
+# Debug
+log
+
+# OS files
+.DS_Store

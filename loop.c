@@ -27,7 +27,7 @@ void	update(t_fdf *fdf)
 	to_iso(&fdf->map, p->z_angle);
 	scale(&fdf->map, p->zoom);
 	set_limits(&fdf->map);
-	shift(&fdf->map, *p);
+	shift(&fdf->map, *p, fdf->win_w, fdf->win_h);
 }
 
 long long	get_time(void)

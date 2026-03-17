@@ -3,21 +3,17 @@ NAME = fdf
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -O3
 RM = rm -rf
-SRC = fdf.c color.c generate_map.c gradient.c hooks.c line.c loop.c matrix.c render.c 
+SRC = fdf.c color.c generate_map.c gradient.c hooks.c line_sdl.c loop.c matrix.c render_sdl.c
 
 OBJ = $(SRC:.c=.o)
 
-all: mlx libft/libft.a $(NAME)
+all: libft/libft.a $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -Llibft -lft -Lminilibx-linux -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -Llibft -lft -lSDL2 -lm -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -I/usr/include -Iminilibx-linux -Ilibft -c $< -o $@
-
-mlx:
-	if [ ! -d "minilibx-linux" ]; then git clone https://github.com/42paris/minilibx-linux.git; fi
-	make -C minilibx-linux
+	$(CC) $(CFLAGS) -I/usr/include -Ilibft -c $< -o $@
 
 libft/libft.a:
 	make -C libft all
@@ -27,7 +23,6 @@ clean:
 	make -C libft clean
 
 fclean: clean
-	$(RM) minilibx-linux
 	$(RM) $(NAME)
 	make -C libft fclean
 

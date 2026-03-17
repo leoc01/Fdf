@@ -14,8 +14,6 @@
 
 int	key_press(int keysym, t_fdf *fdf)
 {
-	if (keysym == ESC)
-		close_fdf(fdf, NULL, NULL);
 	if (keysym == UP)
 		fdf->params.zoom_dir += 1;
 	if (keysym == DOWN)
@@ -69,7 +67,7 @@ int	key_release(int keysym, t_fdf *fdf)
 int	loop(t_fdf *fdf)
 {
 	update(fdf);
-	render(fdf);
+	render_sdl(fdf);
 	return (0);
 }
 
@@ -81,16 +79,25 @@ int	close_fdf(t_fdf *fdf, char *msg, char *err)
 		perror(err);
 	if (fdf->map.point)
 		free(fdf->map.point);
-	if (fdf->mlx_win)
-		mlx_destroy_window(fdf->mlx, fdf->mlx_win);
-	if (fdf->mlx)
-	{
-		mlx_destroy_display(fdf->mlx);
-		free(fdf->mlx);
-	}
+
+	if (fdf->texture)
+		SDL_DestroyTexture(fdf->texture);
+	if (fdf->renderer)
+		SDL_DestroyRenderer(fdf->renderer);
+	if (fdf->window)
+		SDL_DestroyWindow(fdf->window);
+
+	// Free batching buffers
+	if (fdf->map.vbuf)
+		free(fdf->map.vbuf);
+	if (fdf->map.ibuf)
+		free(fdf->map.ibuf);
+
+	SDL_Quit();
+
 	if (fdf)
 		free(fdf);
 	if (msg)
-		exit (1);
-	exit (0);
+		exit(1);
+	exit(0);
 }

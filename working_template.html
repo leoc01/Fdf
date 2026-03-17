@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Terrain Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e8;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* ── Canvas ────────────────────────────────────────── */
+    .canvas-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* ── Glass panel base ─────────────────────────────── */
+    .glass {
+      background: rgba(15, 15, 25, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ── Header ───────────────────────────────────────── */
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      padding: 12px 28px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #f0f0f8;
+    }
+
+    .header p {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(200, 200, 220, 0.7);
+      margin-top: 4px;
+    }
+
+    /* ── Toolbar ───────────────────────────────────────── */
+    .toolbar {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+    }
+
+    .toolbar select,
+    .toolbar button {
+      font-family: inherit;
+      font-size: 0.82rem;
+      color: #e0e0e8;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .toolbar select:hover,
+    .toolbar button:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .toolbar select:focus,
+    .toolbar button:focus {
+      border-color: rgba(120, 140, 255, 0.5);
+    }
+
+    .toolbar select option {
+      background: #1a1a28;
+      color: #e0e0e8;
+    }
+
+    /* ── GitHub link ───────────────────────────────────── */
+    .github-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 20;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #c0c0d0;
+      font-size: 0.8rem;
+      font-weight: 400;
+      transition: all 0.2s ease;
+    }
+
+    .github-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .github-link svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ── Controls panel (bottom) ──────────────────────── */
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      padding: 14px 24px;
+      transition: opacity 0.3s ease;
+    }
+
+    .controls-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .control-item {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(200, 200, 220, 0.8);
+      white-space: nowrap;
+    }
+
+    kbd {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'Inter', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: #d0d0e0;
+      margin: 0 1px;
+    }
+
+    /* ── Loading overlay ──────────────────────────────── */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #0a0a0f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-top-color: rgba(120, 140, 255, 0.7);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(200, 200, 220, 0.6);
+    }
+
+    /* ── Responsive ────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .header {
+        top: 10px;
+        padding: 8px 16px;
+        max-width: calc(100vw - 20px);
+      }
+      .header h1 { font-size: 1rem; }
+      .header p { display: none; }
+
+      .toolbar {
+        top: auto;
+        bottom: 16px;
+        right: 50%;
+        transform: translateX(50%);
+        padding: 6px 10px;
+        gap: 6px;
+      }
+      .toolbar select {
+        font-size: 0.78rem;
+        padding: 8px 10px;
+        min-height: 38px;
+      }
+      .toolbar button {
+        min-width: 38px;
+        min-height: 38px;
+        padding: 8px;
+      }
+
+      .github-link {
+        top: 10px;
+        left: 10px;
+        padding: 6px 10px;
+      }
+      .github-link span { display: none; }
+
+      .controls {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Initializing WebAssembly...</div>
+  </div>
+
+  <!-- GitHub -->
+  <a class="github-link glass" href="https://github.com/leoc01/world-terrain-visualizer" target="_blank" rel="noopener">
+    <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    <span>Source Code</span>
+  </a>
+
+  <!-- Header -->
+  <div class="header glass">
+    <h1>World Terrain Visualizer</h1>
+    <p>Interactive 3D wireframe renderer &mdash; C / SDL2 / WebAssembly</p>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar glass">
+    <select id="map-selector">
+      <option value="maps/t1.fdf">T1 Terrain</option>
+      <option value="maps/42.fdf">42</option>
+      <option value="maps/japan.fdf">Japan</option>
+      <option value="maps/julia.fdf">Julia Fractal</option>
+    </select>
+    <button id="fullscreen-btn" title="Toggle fullscreen">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1,5 1,1 5,1"/><polyline points="11,1 15,1 15,5"/>
+        <polyline points="15,11 15,15 11,15"/><polyline points="5,15 1,15 1,11"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls glass">
+    <div class="controls-inner">
+      <span class="control-item"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move</span>
+      <span class="control-item"><kbd>Q</kbd><kbd>E</kbd> Height</span>
+      <span class="control-item"><kbd>&uarr;</kbd><kbd>&darr;</kbd> Zoom</span>
+      <span class="control-item"><kbd>&larr;</kbd><kbd>&rarr;</kbd> Rotate</span>
+      <span class="control-item"><kbd>P</kbd> Projection</span>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-container" id="canvas-container"></div>
+
+  <script>
+    var currentMap = 'maps/t1.fdf';
+
+    function getMapFromUrl() {
+      return new URLSearchParams(window.location.search).get('map');
+    }
+
+    var selectedMap = getMapFromUrl() || localStorage.getItem('selectedMap') || currentMap;
+
+    var Module = {
+      preRun: [],
+      postRun: [],
+      arguments: [selectedMap],
+      print: function(text) { console.log('WASM: ' + text); },
+      printErr: function(text) { console.warn('WASM: ' + text); },
+      onRuntimeInitialized: function() {
+        console.log('WebAssembly runtime initialized');
+        var loading = document.getElementById('loading');
+        loading.classList.add('hidden');
+        setTimeout(function() { loading.style.display = 'none'; }, 600);
+        setupEventListeners();
+        updateCanvasLayout();
+        setTimeout(function() {
+          Module.setCanvasSize(window.innerWidth, window.innerHeight);
+        }, 100);
+      },
+      canvas: (function() {
+        var c = document.createElement('canvas');
+        c.id = 'canvas';
+        document.getElementById('canvas-container').appendChild(c);
+        return c;
+      })()
+    };
+
+    function updateCanvasLayout() {
+      var canvas = document.getElementById('canvas');
+      if (canvas) {
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
+        if (Module.setCanvasSize) {
+          Module.setCanvasSize(window.innerWidth, window.innerHeight);
+        }
+      }
+    }
+
+    function setupEventListeners() {
+      var mapSelector = document.getElementById('map-selector');
+      if (selectedMap) mapSelector.value = selectedMap;
+
+      mapSelector.addEventListener('change', function() {
+        var val = mapSelector.value;
+        localStorage.setItem('selectedMap', val);
+        var url = new URL(window.location.href);
+        url.searchParams.set('map', val);
+        window.location.href = url.toString();
+      });
+
+      document.getElementById('fullscreen-btn').addEventListener('click', function() {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          document.documentElement.requestFullscreen();
+        }
+      });
+
+      function onFsChange() {
+        updateCanvasLayout();
+      }
+      document.addEventListener('fullscreenchange', onFsChange);
+      document.addEventListener('webkitfullscreenchange', onFsChange);
+    }
+
+    window.addEventListener('resize', updateCanvasLayout);
+
+    /* ── Touch gesture support ─────────────────────────── */
+    (function() {
+      var canvas = null;
+      var activeKeys = {};  // track which synthetic keys are "held"
+
+      function sendKey(code, type) {
+        if (!canvas) canvas = document.getElementById('canvas');
+        if (!canvas) return;
+        // Emscripten SDL2 listens on document/window; use DOM keyCode values
+        var evt = new KeyboardEvent(type, {
+          key: domKeyNames[code] || '', code: code,
+          keyCode: domKeyCodes[code] || 0, which: domKeyCodes[code] || 0,
+          bubbles: true, cancelable: true
+        });
+        canvas.dispatchEvent(evt);
+        document.dispatchEvent(evt);
+      }
+
+      // DOM keyCode values (standard browser values, NOT SDL)
+      var domKeyCodes = {
+        'KeyW': 87, 'KeyA': 65, 'KeyS': 83, 'KeyD': 68,
+        'KeyQ': 81, 'KeyE': 69, 'KeyP': 80,
+        'ArrowUp': 38, 'ArrowDown': 40,
+        'ArrowLeft': 37, 'ArrowRight': 39
+      };
+
+      var domKeyNames = {
+        'KeyW': 'w', 'KeyA': 'a', 'KeyS': 's', 'KeyD': 'd',
+        'KeyQ': 'q', 'KeyE': 'e', 'KeyP': 'p',
+        'ArrowUp': 'ArrowUp', 'ArrowDown': 'ArrowDown',
+        'ArrowLeft': 'ArrowLeft', 'ArrowRight': 'ArrowRight'
+      };
+
+      // Press a key if not already held
+      function pressKey(code) {
+        if (!activeKeys[code]) {
+          activeKeys[code] = true;
+          sendKey(code, 'keydown');
+        }
+      }
+
+      // Release a key if held
+      function releaseKey(code) {
+        if (activeKeys[code]) {
+          delete activeKeys[code];
+          sendKey(code, 'keyup');
+        }
+      }
+
+      // Release all active keys
+      function releaseAll() {
+        var keys = Object.keys(activeKeys);
+        for (var i = 0; i < keys.length; i++) {
+          releaseKey(keys[i]);
+        }
+      }
+
+      // Touch state
+      var touchState = {
+        type: null,        // 'pan' | 'two'
+        startTouches: [],
+        lastTouches: [],
+        lastAngle: null,
+        lastDist: null
+      };
+
+      var PAN_THRESHOLD = 4;     // px minimum move before panning starts
+      var ROTATION_THRESHOLD = 0.03; // radians (~1.7 deg) before rotation starts
+      var ZOOM_THRESHOLD = 8;    // px pinch distance change before zoom starts
+      var HEIGHT_THRESHOLD = 6;  // px vertical 2-finger move before height changes
+
+      function getTouchCenter(t0, t1) {
+        return { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+      }
+
+      function getTouchDist(t0, t1) {
+        var dx = t1.clientX - t0.clientX, dy = t1.clientY - t0.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+
+      function getTouchAngle(t0, t1) {
+        return Math.atan2(t1.clientY - t0.clientY, t1.clientX - t0.clientX);
+      }
+
+      function onTouchStart(e) {
+        // Don't intercept touches on UI elements
+        if (e.target.closest('.toolbar, .github-link, .header, .controls, select, button')) return;
+        e.preventDefault();
+
+        var touches = e.touches;
+        if (touches.length === 1) {
+          touchState.type = 'pan';
+          touchState.lastTouches = [{ clientX: touches[0].clientX, clientY: touches[0].clientY }];
+        } else if (touches.length >= 2) {
+          releaseAll();
+          touchState.type = 'two';
+          touchState.lastTouches = [
+            { clientX: touches[0].clientX, clientY: touches[0].clientY },
+            { clientX: touches[1].clientX, clientY: touches[1].clientY }
+          ];
+          touchState.lastAngle = getTouchAngle(touches[0], touches[1]);
+          touchState.lastDist = getTouchDist(touches[0], touches[1]);
+        }
+      }
+
+      function onTouchMove(e) {
+        if (!touchState.type) return;
+        e.preventDefault();
+
+        var touches = e.touches;
+
+        if (touchState.type === 'pan' && touches.length === 1) {
+          var dx = touches[0].clientX - touchState.lastTouches[0].clientX;
+          var dy = touches[0].clientY - touchState.lastTouches[0].clientY;
+
+          // Horizontal pan
+          if (Math.abs(dx) > PAN_THRESHOLD) {
+            if (dx > 0) { pressKey('KeyD'); releaseKey('KeyA'); }
+            else        { pressKey('KeyA'); releaseKey('KeyD'); }
+          } else {
+            releaseKey('KeyA'); releaseKey('KeyD');
+          }
+
+          // Vertical pan
+          if (Math.abs(dy) > PAN_THRESHOLD) {
+            if (dy > 0) { pressKey('KeyS'); releaseKey('KeyW'); }
+            else        { pressKey('KeyW'); releaseKey('KeyS'); }
+          } else {
+            releaseKey('KeyW'); releaseKey('KeyS');
+          }
+
+          touchState.lastTouches = [{ clientX: touches[0].clientX, clientY: touches[0].clientY }];
+
+        } else if (touchState.type === 'two' && touches.length >= 2) {
+          // Upgrade from pan if second finger added
+          var angle = getTouchAngle(touches[0], touches[1]);
+          var dist = getTouchDist(touches[0], touches[1]);
+          var center = getTouchCenter(touches[0], touches[1]);
+
+          var angleDelta = angle - touchState.lastAngle;
+          // Normalize to [-PI, PI]
+          if (angleDelta > Math.PI) angleDelta -= 2 * Math.PI;
+          if (angleDelta < -Math.PI) angleDelta += 2 * Math.PI;
+
+          var distDelta = dist - touchState.lastDist;
+
+          // 2-finger vertical movement (center Y change) -> height (Q/E)
+          var lastCenter = getTouchCenter(touchState.lastTouches[0], touchState.lastTouches[1]);
+          var centerDy = center.y - lastCenter.y;
+
+          // Rotation (2-finger twist)
+          if (Math.abs(angleDelta) > ROTATION_THRESHOLD) {
+            if (angleDelta > 0) { pressKey('ArrowRight'); releaseKey('ArrowLeft'); }
+            else                { pressKey('ArrowLeft'); releaseKey('ArrowRight'); }
+          } else {
+            releaseKey('ArrowLeft'); releaseKey('ArrowRight');
+          }
+
+          // Pinch zoom
+          if (Math.abs(distDelta) > ZOOM_THRESHOLD) {
+            if (distDelta > 0) { pressKey('ArrowUp'); releaseKey('ArrowDown'); }
+            else               { pressKey('ArrowDown'); releaseKey('ArrowUp'); }
+          } else {
+            releaseKey('ArrowUp'); releaseKey('ArrowDown');
+          }
+
+          // Height change (2-finger drag up/down)
+          if (Math.abs(centerDy) > HEIGHT_THRESHOLD) {
+            if (centerDy > 0) { pressKey('KeyQ'); releaseKey('KeyE'); }
+            else              { pressKey('KeyE'); releaseKey('KeyQ'); }
+          } else {
+            releaseKey('KeyQ'); releaseKey('KeyE');
+          }
+
+          touchState.lastAngle = angle;
+          touchState.lastDist = dist;
+          touchState.lastTouches = [
+            { clientX: touches[0].clientX, clientY: touches[0].clientY },
+            { clientX: touches[1].clientX, clientY: touches[1].clientY }
+          ];
+        }
+      }
+
+      function onTouchEnd(e) {
+        e.preventDefault();
+        var touches = e.touches;
+        if (touches.length === 0) {
+          releaseAll();
+          touchState.type = null;
+        } else if (touches.length === 1) {
+          releaseAll();
+          touchState.type = 'pan';
+          touchState.lastTouches = [{ clientX: touches[0].clientX, clientY: touches[0].clientY }];
+        }
+      }
+
+      // Attach listeners once the canvas exists
+      function attachTouchListeners() {
+        canvas = document.getElementById('canvas');
+        if (!canvas) {
+          setTimeout(attachTouchListeners, 200);
+          return;
+        }
+        // Prevent default touch behaviors on the entire document when touching canvas
+        document.addEventListener('touchstart', onTouchStart, { passive: false });
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd, { passive: false });
+        document.addEventListener('touchcancel', onTouchEnd, { passive: false });
+
+        // Also prevent the context menu on long-press
+        canvas.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+      }
+
+      attachTouchListeners();
+    })();
+  </script>
+  {{{ SCRIPT }}}
+</body>
+</html>
