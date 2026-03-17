@@ -15,13 +15,13 @@ else
 fi
 
 # Build
-make -f Makefile.web clean
-make -f Makefile.web
+make clean
+make WEB=1
 
-if [ -f "fdf.html" ]; then
+if [ -f "build/fdf.html" ]; then
     echo ""
     echo "Build successful."
-    echo "Files to serve: fdf.html, fdf.js, fdf.wasm, fdf.data"
+    echo "Files to serve: build/fdf.html, build/fdf.js, build/fdf.wasm, build/fdf.data"
     echo ""
     echo "To test locally:"
     echo "  python3 -m http.server 8000"

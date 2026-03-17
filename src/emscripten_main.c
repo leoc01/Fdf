@@ -1,11 +1,4 @@
 #include "fdf.h"
-#include <emscripten.h>
-#include <emscripten/html5.h>
-
-typedef struct s_context {
-    t_fdf *fdf;
-    int running;
-} t_context;
 
 // Function declarations
 t_fdf *initialize_fdf(void);

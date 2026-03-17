@@ -19,6 +19,10 @@
 #include <libft.h>
 #include <sys/time.h>
 #include <SDL2/SDL.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#endif
 
 #define W 1366
 #define H 700
@@ -145,6 +149,14 @@ typedef struct s_fdf
 	t_map			map;
 	t_params		params;
 }	t_fdf;
+
+#ifdef __EMSCRIPTEN__
+typedef struct s_context
+{
+	t_fdf	*fdf;
+	int		running;
+}	t_context;
+#endif
 
 // main
 void		start(t_fdf *fdf, char *file);
